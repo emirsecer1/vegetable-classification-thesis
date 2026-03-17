@@ -1,0 +1,8 @@
+Model,Test Accuracy,Macro F1,Weighted F1,Val Accuracy,Parametreler
+EfficientNetV2-S,1.0,1.0,1.0,1.0,"20,206,951"
+ConvNeXt-Tiny,1.0,1.0,1.0,1.0,"27,837,815"
+MobileNetV3-Large,0.9989,0.999,0.9989,1.0,"4,231,495"
+DenseNet-121,0.9989,0.999,0.9989,0.9989,"6,977,431"
+DepthwiseSeparableCNN,0.9298,0.9173,0.9302,0.9481,"195,479"
+SimpleCNN,0.8855,0.8548,0.8812,0.9005,"2,498,839"
+ResidualCNN,0.8801,0.8376,0.8734,0.8811,"2,138,519"
