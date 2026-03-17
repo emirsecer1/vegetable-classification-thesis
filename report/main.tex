@@ -7,7 +7,7 @@
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{array}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage{cite}
 \usepackage{balance}
 \usepackage{tabularx}
@@ -15,6 +15,8 @@
 \usepackage{enumitem}
 \usepackage{url}
 \usepackage{xcolor}
+
+\graphicspath{{../01_eda_feature_engineering/results/}{../02_classical_ml/results/}{../03_cnn_transfer_learning/results/}{../04_vision_transformers/results/}{../05_advanced_techniques/results/}{../06_ensemble/results/}}
 
 \begin{document}
 
@@ -38,14 +40,28 @@ Vegetable Classification, Transfer Learning, Vision Transformers, Ensemble Learn
 
 % ========== Switch to Turkish ==========
 \selectlanguage{turkish}
+\shorthandoff{=}
+
+% ========== TÜRKÇE ÖZET ==========
+\section*{\"{O}zet}
+Bu \c{c}al{\i}\c{s}ma, 23 farkl{\i} sebze kategorisinden olu\c{s}an toplam 6.170 g\"{o}r\"{u}nt\"{u} i\c{c}eren bir veri seti kullan{\i}larak \c{c}ok s{\i}n{\i}fl{\i} sebze g\"{o}r\"{u}nt\"{u}s\"{u} s{\i}n{\i}fland{\i}rmas{\i}n{\i}n kapsaml{\i} bir kar\c{s}{\i}la\c{s}t{\i}rmal{\i} analizini sunmaktad{\i}r. Ara\c{s}t{\i}rmada klasik makine \"{o}\u{g}renmesi, derin evrili\c{s}imli sinir a\u{g}lar{\i} (CNN), g\"{o}r\"{u} d\"{o}n\"{u}\c{s}t\"{u}r\"{u}c\"{u}leri (ViT), ileri d\"{u}zey derin \"{o}\u{g}renme teknikleri ve topluluk stratejileri sistematik olarak de\u{g}erlendirilmi\c{s}tir. \"{O}znitelik m\"{u}hendisli\u{g}i a\c{s}amas{\i}nda renk histogramlar{\i} (HSV, LAB), doku tan{\i}mlay{\i}c{\i}lar{\i} (LBP, GLCM), bi\c{c}im \"{o}znitelikleri (HOG, Hu Momentleri) ve frekans alan{\i} \"{o}znitelikleri dahil olmak \"{u}zere 500'den fazla el yap{\i}m{\i} \"{o}znitelik \c{c}{\i}kar{\i}lm{\i}\c{s}t{\i}r. Random Forest, SVM, XGBoost ve LightGBM gibi klasik modeller en fazla \%63,33 do\u{g}ruluk elde etmi\c{s}tir. EfficientNetV2-S ve ConvNeXt-Tiny ile transfer \"{o}\u{g}renme, \"{o}zel CNN mimarilerine ({\%}88,55--{\%}92,98) k{\i}yasla \%100 test do\u{g}rulu\u{g}una ula\c{s}m{\i}\c{s}t{\i}r. ViT-Small/16, CoAtNet-0 ve EfficientFormer-L1 dahil g\"{o}r\"{u} d\"{o}n\"{u}\c{s}t\"{u}r\"{u}c\"{u}leri de \%100 do\u{g}ruluk sa\u{g}lam{\i}\c{s}t{\i}r. SimCLR tabanl{\i} \"{o}z-denetimli \"{o}\u{g}renme (\%90,76), ArcFace metrik \"{o}\u{g}renme, focal loss ve sinir mimarisi arama gibi ileri teknikler ara\c{s}t{\i}r{\i}lm{\i}\c{s}t{\i}r. Son olarak sert oylama, yumu\c{s}ak oylama, a\u{g}{\i}rl{\i}kl{\i} yumu\c{s}ak oylama ve y{\i}\u{g}{\i}nlama gibi topluluk y\"{o}ntemleri uygulanm{\i}\c{s}; en iyi topluluk \%100 do\u{g}ruluk ve 1,0 Cohen's Kappa de\u{g}eri elde etmi\c{s}tir. Sonu\c{c}lar, derin transfer \"{o}\u{g}renme ve transformer tabanl{\i} yakla\c{s}{\i}mlar{\i}n sebze s{\i}n{\i}fland{\i}rmas{\i}nda klasik y\"{o}ntemlere g\"{o}re belirgin \"{u}st\"{u}nl\"{u}k sa\u{g}lad{\i}\u{g}{\i}n{\i}, topluluk stratejilerinin ise tahmin g\"{u}venilirli\u{g}ini daha da art{\i}rd{\i}\u{g}{\i}n{\i} ortaya koymaktad{\i}r.
+
+\smallskip
+\noindent\textbf{Anahtar Kelimeler:} Sebze S{\i}n{\i}fland{\i}rma, Transfer \"{O}\u{g}renme, G\"{o}r\"{u} D\"{o}n\"{u}\c{s}t\"{u}r\"{u}c\"{u}leri, Topluluk \"{O}\u{g}renmesi, Evrili\c{s}imli Sinir A\u{g}lar{\i}, G\"{o}r\"{u}nt\"{u} S{\i}n{\i}fland{\i}rma
 
 % ========== I. GİRİŞ ==========
 \section{Giri\c{s}}
-G\"{o}r\"{u}nt\"{u} s{\i}n{\i}fland{\i}rma, bilgisayarl{\i} g\"{o}r\"{u} alan{\i}n{\i}n temel problemlerinden biri olup tar{\i}m, g{\i}da end\"{u}strisi ve perakende sekt\"{o}r\"{u}nde \"{o}nemli uygulama alanlar{\i}na sahiptir. Sebze t\"{u}rlerinin otomatik olarak tan{\i}nmas{\i}, kalite kontrol\"{u}, envanter y\"{o}netimi ve ak{\i}ll{\i} tar{\i}m sistemleri i\c{c}in kritik bir gereksinimdir.
+G\"{o}r\"{u}nt\"{u} s{\i}n{\i}fland{\i}rma, bilgisayarl{\i} g\"{o}r\"{u} alan{\i}n{\i}n temel problemlerinden biri olup tar{\i}m, g{\i}da end\"{u}strisi ve perakende sekt\"{o}r\"{u}nde \"{o}nemli uygulama alanlar{\i}na sahiptir. G\"{u}n\"{u}m\"{u}zde tar{\i}msal \"{u}retim s\"{u}re\c{c}lerinde otomasyonun artan \"{o}nemi, g\"{o}r\"{u}nt\"{u} tabanl{\i} s{\i}n{\i}fland{\i}rma sistemlerine olan talebi \"{o}nemli \"{o}l\c{c}\"{u}de art{\i}rm{\i}\c{s}t{\i}r. Sebze t\"{u}rlerinin otomatik olarak tan{\i}nmas{\i}, kalite kontrol\"{u}, envanter y\"{o}netimi, tedarik zinciri optimizasyonu ve ak{\i}ll{\i} tar{\i}m sistemleri i\c{c}in kritik bir gereksinimdir. Geleneksel olarak insan g\"{o}zc\"{u}ler taraf{\i}ndan ger\c{c}ekle\c{s}tirilen sebze s{\i}n{\i}fland{\i}rma i\c{s}lemi, hem zaman al{\i}c{\i} hem de \"{o}znel de\u{g}erlendirmelere a\c{c}{\i}kt{\i}r; bu nedenle g\"{u}venilir ve tekrarlanabilir otomatik s{\i}n{\i}fland{\i}rma sistemlerine ihtiya\c{c} duyulmaktad{\i}r.
 
-Derin \"{o}\u{g}renme y\"{o}ntemlerinin geli\c{s}imiyle birlikte, \"{o}zellikle evrili\c{s}imli sinir a\u{g}lar{\i} (CNN) \cite{he2016deep} ve g\"{o}r\"{u} d\"{o}n\"{u}\c{s}t\"{u}r\"{u}c\"{u}leri (ViT) \cite{dosovitskiy2020image} g\"{o}r\"{u}nt\"{u} s{\i}n{\i}fland{\i}rma g\"{o}revlerinde \"{u}st\"{u}n ba\c{s}ar{\i}m g\"{o}stermi\c{s}tir. Bununla birlikte, farkl{\i} yakla\c{s}{\i}mlar{\i}n ayn{\i} veri seti \"{u}zerinde sistematik olarak kar\c{s}{\i}la\c{s}t{\i}r{\i}lmas{\i}, en uygun y\"{o}ntemin belirlenmesi a\c{c}{\i}s{\i}ndan b\"{u}y\"{u}k \"{o}nem ta\c{s}{\i}maktad{\i}r.
+Bilgisayarl{\i} g\"{o}r\"{u} alan{\i}nda g\"{o}r\"{u}nt\"{u} s{\i}n{\i}fland{\i}rma problemleri uzun y{\i}llard{\i}r ara\c{s}t{\i}r{\i}lmakta olup, ilk d\"{o}nemlerde el yap{\i}m{\i} \"{o}znitelik \c{c}{\i}kar{\i}m{\i}na dayal{\i} yakla\c{s}{\i}mlar yaygın olarak kullan{\i}lm{\i}\c{s}t{\i}r. Renk histogramlar{\i}, doku tan{\i}mlay{\i}c{\i}lar{\i} (LBP, GLCM), bi\c{c}im \"{o}znitelikleri (HOG, Hu Momentleri) ve frekans alan{\i} analizleri gibi geleneksel y\"{o}ntemler, basit s{\i}n{\i}fland{\i}rma g\"{o}revlerinde kabul edilebilir sonu\c{c}lar vermi\c{s}tir. Ancak s{\i}n{\i}f say{\i}s{\i}n{\i}n ve g\"{o}rsel \c{c}e\c{s}itlili\u{g}in artmas{\i}yla bu y\"{o}ntemlerin s{\i}n{\i}rlar{\i} belirginle\c{s}mi\c{s}tir.
 
-Bu \c{c}al{\i}\c{s}mada, 23 farkl{\i} sebze s{\i}n{\i}f{\i}ndan olu\c{s}an 6.170 g\"{o}r\"{u}nt\"{u}l\"{u}k bir veri seti kullan{\i}larak kapsaml{\i} bir kar\c{s}{\i}la\c{s}t{\i}rmal{\i} analiz ger\c{c}ekle\c{s}tirilmi\c{s}tir. \c{C}al{\i}\c{s}ma; (1)~ke\c{s}ifsel veri analizi ve \"{o}znitelik m\"{u}hendisli\u{g}i, (2)~klasik makine \"{o}\u{g}renmesi, (3)~CNN ve transfer \"{o}\u{g}renme, (4)~g\"{o}r\"{u} d\"{o}n\"{u}\c{s}t\"{u}r\"{u}c\"{u}leri, (5)~ileri d\"{u}zey derin \"{o}\u{g}renme teknikleri ve (6)~topluluk y\"{o}ntemleri olmak \"{u}zere alt{\i} ana a\c{s}amadan olu\c{s}maktad{\i}r.
+Derin \"{o}\u{g}renme y\"{o}ntemlerinin geli\c{s}imiyle birlikte, \"{o}zellikle evrili\c{s}imli sinir a\u{g}lar{\i} (CNN) \cite{he2016deep} ve g\"{o}r\"{u} d\"{o}n\"{u}\c{s}t\"{u}r\"{u}c\"{u}leri (ViT) \cite{dosovitskiy2020image} g\"{o}r\"{u}nt\"{u} s{\i}n{\i}fland{\i}rma g\"{o}revlerinde \"{u}st\"{u}n ba\c{s}ar{\i}m g\"{o}stermi\c{s}tir. AlexNet'in 2012 y{\i}l{\i}nda ImageNet yar{\i}\c{s}mas{\i}n{\i} kazanmas{\i}yla ba\c{s}layan derin \"{o}\u{g}renme devrimi, VGGNet, ResNet \cite{he2016deep}, DenseNet \cite{huang2017densely}, EfficientNet \cite{tan2021efficientnetv2} ve ConvNeXt \cite{liu2022convnet} gibi giderek daha g\"{u}\c{c}l\"{u} mimarilerin ortaya \c{c}{\i}kmas{\i}na yol a\c{c}m{\i}\c{s}t{\i}r. Transfer \"{o}\u{g}renme paradigmas{\i}, b\"{u}y\"{u}k \"{o}l\c{c}ekli veri setleri \"{u}zerinde \"{o}n-e\u{g}itilmi\c{s} modellerin daha k\"{u}\c{c}\"{u}k hedef veri setlerine uyarlanmas{\i}n{\i} m\"{u}mk\"{u}n k{\i}larak, s{\i}n{\i}rl{\i} veriye sahip alanlarda dahi y\"{u}ksek ba\c{s}ar{\i}m elde edilmesini sa\u{g}lam{\i}\c{s}t{\i}r.
+
+Son y{\i}llarda transformer mimarisinin do\u{g}al dil i\c{s}lemeden (NLP) bilgisayarl{\i} g\"{o}r\"{u}ye aktar{\i}lmas{\i}, ViT \cite{dosovitskiy2020image}, Swin Transformer \cite{liu2021swin}, DeiT \cite{touvron2021training} ve CoAtNet \cite{dai2021coatnet} gibi g\"{o}r\"{u} d\"{o}n\"{u}\c{s}t\"{u}r\"{u}c\"{u}lerinin geli\c{s}tirilmesine olanak tan{\i}m{\i}\c{s}t{\i}r. Bu modeller, g\"{o}r\"{u}nt\"{u}leri yama dizileri olarak i\c{s}leyerek uzun menzilli ba\u{g}{\i}ml{\i}l{\i}klar{\i} yakalama kapasitesine sahiptir ve \c{c}e\c{s}itli g\"{o}r\"{u}nt\"{u} s{\i}n{\i}fland{\i}rma g\"{o}revlerinde CNN tabanl{\i} modellerle rekabet edebilmekte, hatta baz{\i} durumlarda onlar{\i} a\c{s}maktad{\i}r.
+
+Bununla birlikte, farkl{\i} yakla\c{s}{\i}mlar{\i}n ayn{\i} veri seti \"{u}zerinde sistematik olarak kar\c{s}{\i}la\c{s}t{\i}r{\i}lmas{\i}, en uygun y\"{o}ntemin belirlenmesi a\c{c}{\i}s{\i}ndan b\"{u}y\"{u}k \"{o}nem ta\c{s}{\i}maktad{\i}r. Literat\"{u}rde sebze s{\i}n{\i}fland{\i}rmas{\i}na y\"{o}nelik \c{c}al{\i}\c{s}malar bulunmakla birlikte, klasik makine \"{o}\u{g}renmesinden ileri d\"{u}zey topluluk y\"{o}ntemlerine kadar bu denli geni\c{s} bir yelpazede sistematik kar\c{s}{\i}la\c{s}t{\i}rma sunan \c{c}al{\i}\c{s}malar s{\i}n{\i}rl{\i}d{\i}r.
+
+Bu \c{c}al{\i}\c{s}mada, 23 farkl{\i} sebze s{\i}n{\i}f{\i}ndan olu\c{s}an 6.170 g\"{o}r\"{u}nt\"{u}l\"{u}k bir veri seti kullan{\i}larak kapsaml{\i} bir kar\c{s}{\i}la\c{s}t{\i}rmal{\i} analiz ger\c{c}ekle\c{s}tirilmi\c{s}tir. \c{C}al{\i}\c{s}ma; (1)~ke\c{s}ifsel veri analizi ve \"{o}znitelik m\"{u}hendisli\u{g}i, (2)~klasik makine \"{o}\u{g}renmesi, (3)~CNN ve transfer \"{o}\u{g}renme, (4)~g\"{o}r\"{u} d\"{o}n\"{u}\c{s}t\"{u}r\"{u}c\"{u}leri, (5)~ileri d\"{u}zey derin \"{o}\u{g}renme teknikleri ve (6)~topluluk y\"{o}ntemleri olmak \"{u}zere alt{\i} ana a\c{s}amadan olu\c{s}maktad{\i}r. Her a\c{s}amada elde edilen say{\i}sal sonu\c{c}lar ve g\"{o}rsel \c{c}{\i}kt{\i}lar detayl{\i} olarak sunulmaktad{\i}r.
 
 \c{C}al{\i}\c{s}man{\i}n temel katk{\i}lar{\i} \c{s}u \c{s}ekilde \"{o}zetlenebilir:
 \begin{itemize}
@@ -53,6 +69,7 @@ Bu \c{c}al{\i}\c{s}mada, 23 farkl{\i} sebze s{\i}n{\i}f{\i}ndan olu\c{s}an 6.170
     \item Klasik ML, CNN, ViT ve ileri teknikler ayn{\i} veri seti \"{u}zerinde kar\c{s}{\i}la\c{s}t{\i}r{\i}lm{\i}\c{s}t{\i}r.
     \item SimCLR \"{o}z-denetimli \"{o}\u{g}renme, ArcFace metrik \"{o}\u{g}renme ve NAS gibi modern y\"{o}ntemler de\u{g}erlendirilmi\c{s}tir.
     \item Alt{\i} farkl{\i} topluluk stratejisi ile nihai tahmin performans{\i} optimize edilmi\c{s}tir.
+    \item Her a\c{s}amadaki deneysel sonu\c{c}lar g\"{o}rsel olarak zenginle\c{s}tirilmi\c{s}tir.
 \end{itemize}
 
 % ========== II. İLGİLİ ÇALIŞMALAR ==========
@@ -69,10 +86,64 @@ G\"{o}r\"{u} d\"{o}n\"{u}\c{s}t\"{u}r\"{u}c\"{u}leri alan{\i}nda, Dosovitskiy ve
 \section{Veri Seti ve \"{O}n \.{I}\c{s}leme}
 
 \subsection{Veri Seti}
-Bu \c{c}al{\i}\c{s}mada Kaggle platformundan elde edilen ``Vegetables'' veri seti kullan{\i}lm{\i}\c{s}t{\i}r. Veri seti, 23 farkl{\i} sebze s{\i}n{\i}f{\i}ndan toplam 6.170 g\"{o}r\"{u}nt\"{u} i\c{c}ermektedir. Her g\"{o}r\"{u}nt\"{u} RGB renk uzay{\i}nda ve farkl{\i} \c{c}\"{o}z\"{u}n\"{u}rl\"{u}klerde kaydedilmi\c{s}tir. Veri seti tabakal{\i} \"{o}rnekleme ile \%70 e\u{g}itim, \%15 do\u{g}rulama ve \%15 test olmak \"{u}zere \"{u}\c{c} alt k\"{u}meye ayr{\i}lm{\i}\c{s}t{\i}r.
+Bu \c{c}al{\i}\c{s}mada Kaggle platformundan elde edilen ``Vegetables'' veri seti kullan{\i}lm{\i}\c{s}t{\i}r. Veri seti, 23 farkl{\i} sebze s{\i}n{\i}f{\i}ndan toplam 6.170 g\"{o}r\"{u}nt\"{u} i\c{c}ermektedir. Veri setindeki sebze s{\i}n{\i}flar{\i} \c{s}unlard{\i}r: Bean, Bitter Gourd, Bottle Gourd, Brinjal, Broccoli, Cabbage, Capsicum, Carrot, Cauliflower, Cucumber, Papaya, Potato, Pumpkin, Radish, Tomato ve di\u{g}erleri. Her g\"{o}r\"{u}nt\"{u} RGB renk uzay{\i}nda ve farkl{\i} \c{c}\"{o}z\"{u}n\"{u}rl\"{u}klerde kaydedilmi\c{s}tir. G\"{o}r\"{u}nt\"{u}ler \c{c}e\c{s}itli ayd{\i}nlatma ko\c{s}ullar{\i}, arka plan \c{c}e\c{s}itlili\u{g}i ve farkl{\i} a\c{c}{\i}lardan \c{c}ekilmi\c{s} olup ger\c{c}ek d\"{u}nya senaryolar{\i}n{\i} yans{\i}tmaktad{\i}r.
+
+Veri seti tabakal{\i} \"{o}rnekleme ile \%70 e\u{g}itim, \%15 do\u{g}rulama ve \%15 test olmak \"{u}zere \"{u}\c{c} alt k\"{u}meye ayr{\i}lm{\i}\c{s}t{\i}r. Tabakal{\i} b\"{o}l\"{u}nleme, her alt k\"{u}mede s{\i}n{\i}f oranlar{\i}n{\i}n korunmas{\i}n{\i} sa\u{g}layarak modellerin adil bir \c{s}ekilde de\u{g}erlendirilmesine olanak tan{\i}m{\i}\c{s}t{\i}r.
+
+\c{S}ekil~\ref{fig:sample_images} veri setinden \"{o}rnek g\"{o}r\"{u}nt\"{u}leri g\"{o}stermektedir. Farkl{\i} sebze s{\i}n{\i}flar{\i}n{\i}n g\"{o}rsel \c{c}e\c{s}itlili\u{g}i ve renk, bi\c{c}im, doku a\c{c}{\i}s{\i}ndan farkl{\i}l{\i}klar{\i} a\c{c}{\i}k\c{c}a g\"{o}r\"{u}lmektedir.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{sample_images_grid.png}
+\caption{\"{O}rnek sebze g\"{o}r\"{u}nt\"{u}leri. Veri setindeki farkl{\i} sebze s{\i}n{\i}flar{\i}ndan se\c{c}ilen temsili \"{o}rnekler.}
+\label{fig:sample_images}
+\end{figure}
 
 \subsection{Ke\c{s}ifsel Veri Analizi}
-Ke\c{s}ifsel veri analizi a\c{s}amas{\i}nda s{\i}n{\i}f da\u{g}{\i}l{\i}m{\i}, g\"{o}r\"{u}nt\"{u} boyut da\u{g}{\i}l{\i}m{\i}, kalite metrikleri (bulan{\i}kl{\i}k, kontrast, parlakl{\i}k) ve RGB histogram analizleri ger\c{c}ekle\c{s}tirilmi\c{s}tir. S{\i}n{\i}f dengesizlik oran{\i} incelenerek veri setinin genel yap{\i}s{\i} de\u{g}erlendirilmi\c{s}tir. S{\i}n{\i}flar aras{\i} kosin\"{u}s benzerlik matrisi ile g\"{o}rsel benzerlikleri y\"{u}ksek olan s{\i}n{\i}flar belirlenmi\c{s}tir.
+Ke\c{s}ifsel veri analizi (EDA) a\c{s}amas{\i}nda veri setinin yap{\i}sal \"{o}zellikleri detayl{\i} olarak incelenmi\c{s}tir. Bu analiz, modelleme a\c{s}amas{\i}nda kar\c{s}{\i}la\c{s}{\i}labilecek potansiyel sorunlar{\i}n (s{\i}n{\i}f dengesizli\u{g}i, g\"{o}r\"{u}nt\"{u} kalite farkl{\i}l{\i}klar{\i} vb.) \"{o}nceden tespit edilmesini ama\c{c}lamaktad{\i}r.
+
+\textbf{S{\i}n{\i}f Da\u{g}{\i}l{\i}m{\i}:} Veri setindeki s{\i}n{\i}f ba\c{s}{\i}na d\"{u}\c{s}en g\"{o}r\"{u}nt\"{u} say{\i}lar{\i} incelenmi\c{s}tir. \c{S}ekil~\ref{fig:class_dist} s{\i}n{\i}f da\u{g}{\i}l{\i}m{\i}n{\i} g\"{o}stermektedir. S{\i}n{\i}f dengesizlik oran{\i} incelenerek veri setinin genel yap{\i}s{\i} de\u{g}erlendirilmi\c{s}tir.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{class_distribution.png}
+\caption{Veri setindeki s{\i}n{\i}f da\u{g}{\i}l{\i}m{\i}. Her bir sebze s{\i}n{\i}f{\i}na ait g\"{o}r\"{u}nt\"{u} say{\i}lar{\i}.}
+\label{fig:class_dist}
+\end{figure}
+
+\textbf{G\"{o}r\"{u}nt\"{u} Boyut ve Kalite Analizi:} G\"{o}r\"{u}nt\"{u} boyut da\u{g}{\i}l{\i}m{\i} incelenerek \c{c}\"{o}z\"{u}n\"{u}rl\"{u}k farkl{\i}l{\i}klar{\i} belirlenmi\c{s}tir (\c{S}ekil~\ref{fig:img_size}). Ayr{\i}ca bulan{\i}kl{\i}k (Laplacian varyans{\i}), kontrast ve parlakl{\i}k gibi kalite metrikleri hesaplanm{\i}\c{s}t{\i}r (\c{S}ekil~\ref{fig:quality}).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{image_size_distribution.png}
+\caption{G\"{o}r\"{u}nt\"{u} boyut da\u{g}{\i}l{\i}m{\i}. Veri setindeki g\"{o}r\"{u}nt\"{u}lerin geni\c{s}lik ve y\"{u}kseklik da\u{g}{\i}l{\i}mlar{\i}.}
+\label{fig:img_size}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{quality_metrics.png}
+\caption{G\"{o}r\"{u}nt\"{u} kalite metrikleri. S{\i}n{\i}f bazl{\i} bulan{\i}kl{\i}k, kontrast ve parlakl{\i}k de\u{g}erleri.}
+\label{fig:quality}
+\end{figure}
+
+\textbf{Renk Analizi:} Her s{\i}n{\i}f i\c{c}in RGB kanal histogramlar{\i} hesaplanm{\i}\c{s} ve s{\i}n{\i}flar aras{\i} renk da\u{g}{\i}l{\i}m farkl{\i}l{\i}klar{\i} incelenmi\c{s}tir (\c{S}ekil~\ref{fig:rgb_hist}). Farkl{\i} sebze t\"{u}rlerinin belirgin renk profilleri, renk tabanl{\i} \"{o}zniteliklerin ay{\i}r{\i}c{\i} g\"{u}c\"{u}n\"{u}n potansiyelini ortaya koymaktad{\i}r.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{rgb_histograms.png}
+\caption{S{\i}n{\i}f bazl{\i} RGB kanal histogramlar{\i}. Farkl{\i} sebze t\"{u}rlerinin renk profilleri.}
+\label{fig:rgb_hist}
+\end{figure}
+
+\textbf{S{\i}n{\i}flar Aras{\i} Benzerlik:} S{\i}n{\i}flar aras{\i} kosin\"{u}s benzerlik matrisi hesaplanarak g\"{o}rsel benzerlikleri y\"{u}ksek olan s{\i}n{\i}flar belirlenmi\c{s}tir (\c{S}ekil~\ref{fig:similarity}). Bu analiz, s{\i}n{\i}fland{\i}r{\i}c{\i}lar{\i}n hangi s{\i}n{\i}f \c{c}iftlerinde zorlanabilece\u{g}ine dair \"{o}ng\"{o}r\"{u} sa\u{g}lamaktad{\i}r.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{class_similarity_matrix.png}
+\caption{S{\i}n{\i}flar aras{\i} kosin\"{u}s benzerlik matrisi. Y\"{u}ksek benzerlik de\u{g}erleri, ay{\i}rt edilmesi zor s{\i}n{\i}f \c{c}iftlerini g\"{o}stermektedir.}
+\label{fig:similarity}
+\end{figure}
 
 \subsection{\"{O}znitelik M\"{u}hendisli\u{g}i}
 Klasik makine \"{o}\u{g}renmesi modelleri i\c{c}in toplam 500'den fazla el yap{\i}m{\i} \"{o}znitelik \c{c}{\i}kar{\i}lm{\i}\c{s}t{\i}r. \c{C}{\i}kar{\i}lan \"{o}znitelikler a\c{s}a\u{g}{\i}daki kategorilerden olu\c{s}maktad{\i}r:
@@ -86,7 +157,32 @@ Klasik makine \"{o}\u{g}renmesi modelleri i\c{c}in toplam 500'den fazla el yap{\
     \item \textbf{Frekans Alan{\i} \"{O}znitelikleri (4):} FFT enerjisi, entropi, d\"{u}\c{s}\"{u}k ve y\"{u}ksek frekans oranlar{\i}.
 \end{itemize}
 
-Boyut indirgeme y\"{o}ntemleri olarak t-SNE \cite{vandermaaten2008visualizing} ve UMAP \cite{mcinnes2018umap} kullan{\i}larak \"{o}znitelik uzay{\i} g\"{o}rselle\c{s}tirilmi\c{s}tir. Ayr{\i}ca PCA ile \%95 varyans{\i} koruyan bile\c{s}enler ve LDA ile s{\i}n{\i}f ay{\i}r{\i}c{\i} bile\c{s}enler elde edilmi\c{s}tir.
+\c{C}{\i}kar{\i}lan \"{o}znitelikler aras{\i}ndaki korelasyonlar incelenerek y\"{u}ksek korelasyonlu \"{o}znitelik gruplar{\i} belirlenmi\c{s}tir (\c{S}ekil~\ref{fig:feature_corr}).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{feature_correlation.png}
+\caption{\"{O}znitelik korelasyon matrisi. Y\"{u}ksek korelasyonlu \"{o}znitelik gruplar{\i}n{\i}n belirlenmesi.}
+\label{fig:feature_corr}
+\end{figure}
+
+Boyut indirgeme y\"{o}ntemleri olarak t-SNE \cite{vandermaaten2008visualizing} ve UMAP \cite{mcinnes2018umap} kullan{\i}larak \"{o}znitelik uzay{\i} g\"{o}rselle\c{s}tirilmi\c{s}tir (\c{S}ekil~\ref{fig:tsne} ve \c{S}ekil~\ref{fig:umap}). Bu g\"{o}rselle\c{s}tirmeler, \c{c}{\i}kar{\i}lan \"{o}zniteliklerin s{\i}n{\i}flar{\i} ne \"{o}l\c{c}\"{u}de ay{\i}rt edebildi\u{g}ini ortaya koymaktad{\i}r. t-SNE g\"{o}rselle\c{s}tirmesinde baz{\i} s{\i}n{\i}flar{\i}n net k\"{u}meler olu\c{s}turdu\u{g}u, ancak baz{\i} s{\i}n{\i}flar{\i}n birbiriyle \"{o}rt\"{u}\c{s}t\"{u}\u{g}\"{u} g\"{o}r\"{u}lm\"{u}\c{s}t\"{u}r.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{tsne_visualization.png}
+\caption{t-SNE ile \"{o}znitelik uzay{\i} g\"{o}rselle\c{s}tirmesi. Her nokta bir g\"{o}r\"{u}nt\"{u}y\"{u}, renkler farkl{\i} sebze s{\i}n{\i}flar{\i}n{\i} temsil etmektedir.}
+\label{fig:tsne}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{umap_visualization.png}
+\caption{UMAP ile \"{o}znitelik uzay{\i} g\"{o}rselle\c{s}tirmesi. t-SNE'ye k{\i}yasla global yap{\i}y{\i} daha iyi korumaktad{\i}r.}
+\label{fig:umap}
+\end{figure}
+
+Ayr{\i}ca PCA ile \%95 varyans{\i} koruyan bile\c{s}enler ve LDA ile s{\i}n{\i}f ay{\i}r{\i}c{\i} bile\c{s}enler elde edilmi\c{s}tir.
 
 % ========== IV. KLASİK MAKİNE ÖĞRENMESİ ==========
 \section{Klasik Makine \"{O}\u{g}renmesi}
@@ -129,6 +225,40 @@ SVM-Polinom        & 0,1667 & 0,0159 & 0,1429 \\
 \end{table}
 
 En y\"{u}ksek do\u{g}ruluk Random Forest modeli ile \%63,33 olarak elde edilmi\c{s}tir. El yap{\i}m{\i} \"{o}zniteliklerin 23 s{\i}n{\i}fl{\i} bir problemde s{\i}n{\i}rl{\i} ay{\i}r{\i}c{\i} g\"{u}\c{c} sundu\u{g}u g\"{o}r\"{u}lm\"{u}\c{s}t\"{u}r. Bu durum, derin \"{o}\u{g}renme yakla\c{s}{\i}mlar{\i}n{\i}n gereklili\u{g}ini ortaya koymaktad{\i}r.
+
+\c{S}ekil~\ref{fig:ml_comparison} klasik modellerin performans kar\c{s}{\i}la\c{s}t{\i}rmas{\i}n{\i} g\"{o}rsel olarak sunmaktad{\i}r. \c{S}ekil~\ref{fig:rf_confusion} ise en ba\c{s}ar{\i}l{\i} klasik model olan Random Forest'{\i}n kar{\i}\c{s}{\i}kl{\i}k matrisini g\"{o}stermektedir.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{model_comparison_chart.png}
+\caption{Klasik makine \"{o}\u{g}renmesi modellerinin performans kar\c{s}{\i}la\c{s}t{\i}rmas{\i}.}
+\label{fig:ml_comparison}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{confusion_matrix_Random_Forest.png}
+\caption{Random Forest modeli kar{\i}\c{s}{\i}kl{\i}k matrisi. En y\"{u}ksek performansl{\i} klasik modelin s{\i}n{\i}f bazl{\i} tahmin ba\c{s}ar{\i}s{\i}.}
+\label{fig:rf_confusion}
+\end{figure}
+
+PCA ile boyut indirgeme analizi \c{S}ekil~\ref{fig:pca}'da g\"{o}sterilmektedir. \"{O}znitelik uzay{\i}n{\i}n ilk iki temel bile\c{s}eni \"{u}zerindeki s{\i}n{\i}f da\u{g}{\i}l{\i}mlar{\i}, el yap{\i}m{\i} \"{o}zniteliklerin s{\i}n{\i}rl{\i} ay{\i}r{\i}c{\i} kapasitesini g\"{o}rsel olarak do\u{g}rulamaktad{\i}r.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{pca_analysis.png}
+\caption{PCA boyut indirgeme analizi. \.{I}lk iki temel bile\c{s}en \"{u}zerinde s{\i}n{\i}f da\u{g}{\i}l{\i}mlar{\i}.}
+\label{fig:pca}
+\end{figure}
+
+Random Forest modeli i\c{c}in \"{o}znitelik \"{o}nem s{\i}ralamalar{\i} \c{S}ekil~\ref{fig:rf_importance}'te sunulmaktad{\i}r. Renk histogramlar{\i} ve istatistiksel \"{o}zniteliklerin en ay{\i}r{\i}c{\i} \"{o}znitelikler oldu\u{g}u g\"{o}r\"{u}lm\"{u}\c{s}t\"{u}r.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{rf_feature_importance.png}
+\caption{Random Forest \"{o}znitelik \"{o}nem s{\i}ralamalar{\i}. En etkili \"{o}znitelik gruplar{\i}.}
+\label{fig:rf_importance}
+\end{figure}
 
 % ========== V. CNN VE TRANSFER ÖĞRENME ==========
 \section{CNN ve Transfer \"{O}\u{g}renme}
@@ -185,6 +315,24 @@ ResidualCNN        & 0,8801 & 0,8376 & 2,1M  \\
 
 Transfer \"{o}\u{g}renme modelleri, \"{o}zel CNN mimarilerine k{\i}yasla belirgin \c{s}ekilde \"{u}st\"{u}n performans sergilemi\c{s}tir. EfficientNetV2-S ve ConvNeXt-Tiny \%100 test do\u{g}rulu\u{g}u elde etmi\c{s}tir. En hafif transfer \"{o}\u{g}renme modeli olan MobileNetV3-Large, yaln{\i}zca 4,2M parametre ile \%99,89 do\u{g}ruluk sa\u{g}lam{\i}\c{s}t{\i}r.
 
+\c{S}ekil~\ref{fig:cnn_comparison} CNN modellerinin performans kar\c{s}{\i}la\c{s}t{\i}rmas{\i}n{\i} g\"{o}stermektedir. Transfer \"{o}\u{g}renme modellerinin \"{o}zel CNN mimarilerine g\"{o}re belirgin \"{u}st\"{u}nl\"{u}\u{g}\"{u} a\c{c}{\i}k\c{c}a g\"{o}r\"{u}lmektedir.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{cnn_comparison_chart.png}
+\caption{CNN ve transfer \"{o}\u{g}renme modellerinin performans kar\c{s}{\i}la\c{s}t{\i}rmas{\i}.}
+\label{fig:cnn_comparison}
+\end{figure}
+
+T\"{u}m CNN modellerinin e\u{g}itim s\"{u}recindeki do\u{g}ruluk ve kay{\i}p de\u{g}i\c{s}imleri \c{S}ekil~\ref{fig:training_history}'de sunulmaktad{\i}r. Transfer \"{o}\u{g}renme modellerinin daha h{\i}zl{\i} yak{\i}nsad{\i}\u{g}{\i} ve daha y\"{u}ksek platoya ula\c{s}t{\i}\u{g}{\i} g\"{o}r\"{u}lmektedir.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{training_history_all.png}
+\caption{T\"{u}m CNN modellerinin e\u{g}itim ge\c{c}mi\c{s}i. Do\u{g}ruluk ve kay{\i}p de\u{g}i\c{s}imleri.}
+\label{fig:training_history}
+\end{figure}
+
 % ========== VI. GÖRÜ DÖNÜŞTÜRÜCÜLERİ ==========
 \section{G\"{o}r\"{u} D\"{o}n\"{u}\c{s}t\"{u}r\"{u}c\"{u}leri}
 Bu b\"{o}l\"{u}mde saf transformer ve hibrit CNN-transformer mimarileri de\u{g}erlendirilmi\c{s}tir.
@@ -230,6 +378,24 @@ Swin-Tiny           & Transformer & 0,9946 & 27,5M \\
 \end{table}
 
 ViT-Small/16, CoAtNet-0 ve EfficientFormer-L1 modelleri \%100 test do\u{g}rulu\u{g}u elde etmi\c{s}tir. EfficientFormer-L1, 11,4M parametre ile en verimli model olarak \"{o}ne \c{c}{\i}km{\i}\c{s}t{\i}r. Swin-Tiny ise \%99,46 do\u{g}ruluk ile yak{\i}n performans g\"{o}stermi\c{s}tir.
+
+\c{S}ekil~\ref{fig:vit_comparison} g\"{o}r\"{u} d\"{o}n\"{u}\c{s}t\"{u}r\"{u}c\"{u} modellerinin performans kar\c{s}{\i}la\c{s}t{\i}rmas{\i}n{\i} sunmaktad{\i}r.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{vit_comparison_chart.png}
+\caption{G\"{o}r\"{u} d\"{o}n\"{u}\c{s}t\"{u}r\"{u}c\"{u} modellerinin performans kar\c{s}{\i}la\c{s}t{\i}rmas{\i}.}
+\label{fig:vit_comparison}
+\end{figure}
+
+ViT modelinin dikkat haritalar{\i} \c{S}ekil~\ref{fig:vit_attention}'de g\"{o}sterilmektedir. Model, sebzelerin ay{\i}rt edici b\"{o}lgelerine (bi\c{c}im, renk ge\c{c}i\c{s}leri, kenar yap{\i}lar{\i}) odaklanmaktad{\i}r.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{vit_attention_samples.png}
+\caption{ViT dikkat haritas{\i} g\"{o}rselle\c{s}tirmesi. Modelin \"{o}rnek g\"{o}r\"{u}nt\"{u}lerdeki odakland{\i}\u{g}{\i} b\"{o}lgeler.}
+\label{fig:vit_attention}
+\end{figure}
 
 % ========== VII. İLERİ DÜZEY TEKNİKLER ==========
 \section{\.{I}leri D\"{u}zey Teknikler}
@@ -279,6 +445,56 @@ FPN \c{C}ok \"{O}l\c{c}ekli & Mimari     & 0,6910 \\
 \end{table}
 
 SimCLR \"{o}z-denetimli \"{o}\u{g}renme, etiket kullanmadan \%90,76 do\u{g}ruluk elde ederek umut vadeden sonu\c{c}lar sunmu\c{s}tur. Temel CE kayb{\i} \%92,58 ile en y\"{u}ksek do\u{g}rulu\u{g}u sa\u{g}lam{\i}\c{s}t{\i}r.
+
+\c{S}ekil~\ref{fig:advanced_comparison} ileri d\"{u}zey tekniklerin performans kar\c{s}{\i}la\c{s}t{\i}rmas{\i}n{\i} g\"{o}stermektedir.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{advanced_methods_chart.png}
+\caption{\.{I}leri d\"{u}zey tekniklerin performans kar\c{s}{\i}la\c{s}t{\i}rmas{\i}.}
+\label{fig:advanced_comparison}
+\end{figure}
+
+SimCLR \"{o}z-denetimli \"{o}\u{g}renme s\"{u}recindeki kontrastif kay{\i}p de\u{g}i\c{s}imi \c{S}ekil~\ref{fig:simclr_loss}'te, \"{o}\u{g}renilen temsillerin t-SNE g\"{o}rselle\c{s}tirmesi ise \c{S}ekil~\ref{fig:simclr_tsne}'de sunulmaktad{\i}r.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{simclr_loss.png}
+\caption{SimCLR e\u{g}itim s\"{u}recinde kontrastif kay{\i}p (NT-Xent) de\u{g}i\c{s}imi.}
+\label{fig:simclr_loss}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{simclr_tsne.png}
+\caption{SimCLR ile \"{o}\u{g}renilen temsillerin t-SNE g\"{o}rselle\c{s}tirmesi. \"{O}z-denetimli \"{o}\u{g}renmenin s{\i}n{\i}f k\"{u}melerini ba\c{s}ar{\i}yla olu\c{s}turdu\u{g}u g\"{o}r\"{u}lmektedir.}
+\label{fig:simclr_tsne}
+\end{figure}
+
+Metrik \"{o}\u{g}renme yakla\c{s}{\i}mlar{\i}n{\i}n e\u{g}itim kay{\i}plar{\i} \c{S}ekil~\ref{fig:metric_losses}'te g\"{o}sterilmektedir. M\"{u}fredat \"{o}\u{g}renmesi s\"{u}recindeki \"{o}rnek zorluk da\u{g}{\i}l{\i}m{\i} \c{S}ekil~\ref{fig:curriculum}'de sunulmaktad{\i}r.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{metric_learning_losses.png}
+\caption{Triplet ve ArcFace metrik \"{o}\u{g}renme e\u{g}itim kay{\i}plar{\i}.}
+\label{fig:metric_losses}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{curriculum_difficulty.png}
+\caption{M\"{u}fredat \"{o}\u{g}renmesi s\"{u}recinde \"{o}rnek zorluk da\u{g}{\i}l{\i}m{\i}.}
+\label{fig:curriculum}
+\end{figure}
+
+Focal loss ile \c{c}apraz entropi kayb{\i}n{\i}n kar\c{s}{\i}la\c{s}t{\i}rmal{\i} e\u{g}itim s\"{u}re\c{c}leri \c{S}ekil~\ref{fig:focal_vs_ce}'de g\"{o}sterilmektedir.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{focal_vs_ce_loss.png}
+\caption{Focal loss ve \c{c}apraz entropi kayb{\i} kar\c{s}{\i}la\c{s}t{\i}rmas{\i}. E\u{g}itim ve do\u{g}rulama kay{\i}plar{\i}n{\i}n epoch'lara g\"{o}re de\u{g}i\c{s}imi.}
+\label{fig:focal_vs_ce}
+\end{figure}
 
 % ========== VIII. TOPLULUK YÖNTEMLERİ ==========
 \section{Topluluk Y\"{o}ntemleri}
@@ -337,6 +553,42 @@ ResidualCNN         & Bireysel & 0,8801 & 0,8714 \\
 \end{table}
 
 Sert oylama, yumu\c{s}ak oylama, a\u{g}{\i}rl{\i}kl{\i} yumu\c{s}ak oylama ve a\c{c}g\"{o}zl\"{u} se\c{c}im y\"{o}ntemleri \%100 do\u{g}ruluk ve 1,0 Cohen's Kappa de\u{g}eri elde etmi\c{s}tir. S{\i}ra ortalamalama y\"{o}ntemi \%99,68 do\u{g}ruluk ile hafif bir d\"{u}\c{s}\"{u}\c{s} g\"{o}stermi\c{s}tir.
+
+\c{S}ekil~\ref{fig:confusion_ensemble} topluluk ve bireysel modellerin kar{\i}\c{s}{\i}kl{\i}k matrislerinin kar\c{s}{\i}la\c{s}t{\i}rmas{\i}n{\i} sunmaktad{\i}r.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{confusion_matrix_comparison-2.png}
+\caption{Topluluk ve bireysel modellerin kar{\i}\c{s}{\i}kl{\i}k matrisi kar\c{s}{\i}la\c{s}t{\i}rmas{\i}.}
+\label{fig:confusion_ensemble}
+\end{figure}
+
+Modeller aras{\i} hata korelasyonlar{\i} \c{S}ekil~\ref{fig:error_corr}'de g\"{o}sterilmektedir. D\"{u}\c{s}\"{u}k korelasyonlu modellerin birle\c{s}tirilmesi, topluluk y\"{o}ntemlerinin etkinli\u{g}ini art{\i}rmaktad{\i}r.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{error_correlation_matrix-2.png}
+\caption{Modeller aras{\i} hata korelasyon matrisi. D\"{u}\c{s}\"{u}k korelasyon, topluluk \c{c}e\c{s}itlili\u{g}inin y\"{u}ksek oldu\u{g}unu g\"{o}stermektedir.}
+\label{fig:error_corr}
+\end{figure}
+
+S{\i}n{\i}f bazl{\i} F1 skorlar{\i} \c{S}ekil~\ref{fig:per_class_f1}'de sunulmaktad{\i}r. T\"{u}m topluluk y\"{o}ntemlerinin s{\i}n{\i}flar genelinde tutarl{\i} y\"{u}ksek performans g\"{o}sterdi\u{g}i g\"{o}r\"{u}lmektedir.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{per_class_f1-2.png}
+\caption{S{\i}n{\i}f bazl{\i} F1 skorlar{\i}. T\"{u}m sebze s{\i}n{\i}flar{\i} i\c{c}in model performanslar{\i}.}
+\label{fig:per_class_f1}
+\end{figure}
+
+ROC-AUC e\u{g}rileri \c{S}ekil~\ref{fig:roc_auc}'de g\"{o}sterilmektedir.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{roc_auc_curves-2.png}
+\caption{ROC-AUC e\u{g}rileri. \c{C}ok s{\i}n{\i}fl{\i} s{\i}n{\i}fland{\i}rma i\c{c}in One-vs-Rest yakla\c{s}{\i}m{\i} ile hesaplanm{\i}\c{s}t{\i}r.}
+\label{fig:roc_auc}
+\end{figure}
 
 % ========== IX. TARTIŞMA ==========
 \section{Tart{\i}\c{s}ma}
