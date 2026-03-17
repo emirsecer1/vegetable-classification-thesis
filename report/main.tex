@@ -1,0 +1,376 @@
+\documentclass[conference]{IEEEtran}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[turkish,english]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{cite}
+\usepackage{balance}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage{xcolor}
+
+\begin{document}
+
+\title{Sebze G\"{o}r\"{u}nt\"{u}lerinin \c{C}ok S{\i}n{\i}fl{\i} S{\i}n{\i}fland{\i}r{\i}lmas{\i}:\\ Klasik Makine \"{O}\u{g}renmesinden Topluluk Y\"{o}ntemlerine Kapsaml{\i} Bir Kar\c{s}{\i}la\c{s}t{\i}rmal{\i} \c{C}al{\i}\c{s}ma}
+
+\author{
+\IEEEauthorblockN{Emir Se\c{c}er}
+\IEEEauthorblockA{}
+}
+
+\maketitle
+
+% ========== ABSTRACT (English) ==========
+\begin{abstract}
+This study presents a comprehensive comparative analysis of multi-class vegetable image classification using a dataset comprising 6{,}170 images across 23 vegetable categories. The research systematically evaluates methods spanning classical machine learning, deep convolutional neural networks (CNNs), vision transformers (ViTs), advanced deep learning techniques, and ensemble strategies. In the feature engineering phase, over 500 hand-crafted features including color histograms (HSV, LAB), texture descriptors (LBP, GLCM), shape features (HOG, Hu Moments), and frequency-domain features were extracted. Classical models such as Random Forest, SVM, XGBoost, and LightGBM achieved a maximum accuracy of 63.33\%. Transfer learning with EfficientNetV2-S and ConvNeXt-Tiny achieved 100\% test accuracy, significantly outperforming custom CNN architectures (88.55\%--92.98\%). Vision transformers including ViT-Small/16, CoAtNet-0, and EfficientFormer-L1 also achieved 100\% accuracy. Advanced techniques such as SimCLR-based self-supervised learning (90.76\%), ArcFace metric learning, focal loss, and neural architecture search were explored. Finally, ensemble methods including hard voting, soft voting, weighted soft voting, and stacking were applied, with the best ensemble achieving 100\% accuracy and a Cohen's Kappa of 1.0. The results demonstrate that deep transfer learning and transformer-based approaches substantially outperform classical methods for vegetable classification, while ensemble strategies further improve prediction robustness.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Vegetable Classification, Transfer Learning, Vision Transformers, Ensemble Learning, Convolutional Neural Networks, Image Classification
+\end{IEEEkeywords}
+
+% ========== Switch to Turkish ==========
+\selectlanguage{turkish}
+
+% ========== I. GİRİŞ ==========
+\section{Giri\c{s}}
+G\"{o}r\"{u}nt\"{u} s{\i}n{\i}fland{\i}rma, bilgisayarl{\i} g\"{o}r\"{u} alan{\i}n{\i}n temel problemlerinden biri olup tar{\i}m, g{\i}da end\"{u}strisi ve perakende sekt\"{o}r\"{u}nde \"{o}nemli uygulama alanlar{\i}na sahiptir. Sebze t\"{u}rlerinin otomatik olarak tan{\i}nmas{\i}, kalite kontrol\"{u}, envanter y\"{o}netimi ve ak{\i}ll{\i} tar{\i}m sistemleri i\c{c}in kritik bir gereksinimdir.
+
+Derin \"{o}\u{g}renme y\"{o}ntemlerinin geli\c{s}imiyle birlikte, \"{o}zellikle evrili\c{s}imli sinir a\u{g}lar{\i} (CNN) \cite{he2016deep} ve g\"{o}r\"{u} d\"{o}n\"{u}\c{s}t\"{u}r\"{u}c\"{u}leri (ViT) \cite{dosovitskiy2020image} g\"{o}r\"{u}nt\"{u} s{\i}n{\i}fland{\i}rma g\"{o}revlerinde \"{u}st\"{u}n ba\c{s}ar{\i}m g\"{o}stermi\c{s}tir. Bununla birlikte, farkl{\i} yakla\c{s}{\i}mlar{\i}n ayn{\i} veri seti \"{u}zerinde sistematik olarak kar\c{s}{\i}la\c{s}t{\i}r{\i}lmas{\i}, en uygun y\"{o}ntemin belirlenmesi a\c{c}{\i}s{\i}ndan b\"{u}y\"{u}k \"{o}nem ta\c{s}{\i}maktad{\i}r.
+
+Bu \c{c}al{\i}\c{s}mada, 23 farkl{\i} sebze s{\i}n{\i}f{\i}ndan olu\c{s}an 6.170 g\"{o}r\"{u}nt\"{u}l\"{u}k bir veri seti kullan{\i}larak kapsaml{\i} bir kar\c{s}{\i}la\c{s}t{\i}rmal{\i} analiz ger\c{c}ekle\c{s}tirilmi\c{s}tir. \c{C}al{\i}\c{s}ma; (1)~ke\c{s}ifsel veri analizi ve \"{o}znitelik m\"{u}hendisli\u{g}i, (2)~klasik makine \"{o}\u{g}renmesi, (3)~CNN ve transfer \"{o}\u{g}renme, (4)~g\"{o}r\"{u} d\"{o}n\"{u}\c{s}t\"{u}r\"{u}c\"{u}leri, (5)~ileri d\"{u}zey derin \"{o}\u{g}renme teknikleri ve (6)~topluluk y\"{o}ntemleri olmak \"{u}zere alt{\i} ana a\c{s}amadan olu\c{s}maktad{\i}r.
+
+\c{C}al{\i}\c{s}man{\i}n temel katk{\i}lar{\i} \c{s}u \c{s}ekilde \"{o}zetlenebilir:
+\begin{itemize}
+    \item Sebze s{\i}n{\i}fland{\i}rmas{\i} i\c{c}in 500'den fazla el yap{\i}m{\i} \"{o}znitelik \c{c}{\i}kar{\i}lm{\i}\c{s} ve sistematik olarak de\u{g}erlendirilmi\c{s}tir.
+    \item Klasik ML, CNN, ViT ve ileri teknikler ayn{\i} veri seti \"{u}zerinde kar\c{s}{\i}la\c{s}t{\i}r{\i}lm{\i}\c{s}t{\i}r.
+    \item SimCLR \"{o}z-denetimli \"{o}\u{g}renme, ArcFace metrik \"{o}\u{g}renme ve NAS gibi modern y\"{o}ntemler de\u{g}erlendirilmi\c{s}tir.
+    \item Alt{\i} farkl{\i} topluluk stratejisi ile nihai tahmin performans{\i} optimize edilmi\c{s}tir.
+\end{itemize}
+
+% ========== II. İLGİLİ ÇALIŞMALAR ==========
+\section{\.{I}lgili \c{C}al{\i}\c{s}malar}
+G\"{o}r\"{u}nt\"{u} s{\i}n{\i}fland{\i}rma alan{\i}nda derin \"{o}\u{g}renme y\"{o}ntemlerinin kullan{\i}m{\i} son y{\i}llarda b\"{u}y\"{u}k ivme kazanm{\i}\c{s}t{\i}r. He ve arkada\c{s}lar{\i} \cite{he2016deep} taraf{\i}ndan \"{o}nerilen ResNet mimarisi, art{\i}k ba\u{g}lant{\i}lar sayesinde derin a\u{g}lar{\i}n e\u{g}itimini m\"{u}mk\"{u}n k{\i}lm{\i}\c{s}t{\i}r. Huang ve arkada\c{s}lar{\i} \cite{huang2017densely} DenseNet ile yo\u{g}un ba\u{g}lant{\i}lar kullanarak \"{o}znitelik yeniden kullan{\i}m{\i}n{\i} art{\i}rm{\i}\c{s}t{\i}r. Howard ve arkada\c{s}lar{\i} \cite{howard2019searching} MobileNetV3 ile mobil cihazlara y\"{o}nelik verimli mimariler geli\c{s}tirmi\c{s}tir.
+
+Transfer \"{o}\u{g}renme yakla\c{s}{\i}m{\i}nda, Tan ve Le \cite{tan2021efficientnetv2} EfficientNetV2 ile daha k\"{u}\c{c}\"{u}k modeller ve daha h{\i}zl{\i} e\u{g}itim sunmu\c{s}tur. Liu ve arkada\c{s}lar{\i} \cite{liu2022convnet} ConvNeXt ile modern CNN tasar{\i}m{\i}n{\i}n transformer tabanl{\i} modellerle rekabet edebilece\u{g}ini g\"{o}stermi\c{s}tir.
+
+G\"{o}r\"{u} d\"{o}n\"{u}\c{s}t\"{u}r\"{u}c\"{u}leri alan{\i}nda, Dosovitskiy ve arkada\c{s}lar{\i} \cite{dosovitskiy2020image} ViT modelini sunarak g\"{o}r\"{u}nt\"{u}lerin yama dizileri olarak i\c{s}lenebilece\u{g}ini g\"{o}stermi\c{s}tir. Liu ve arkada\c{s}lar{\i} \cite{liu2021swin} Swin Transformer ile hiyerar\c{s}ik pencere tabanl{\i} dikkat mekanizmas{\i}n{\i} \"{o}nermi\c{s}tir. Dai ve arkada\c{s}lar{\i} \cite{dai2021coatnet} CoAtNet ile evrili\c{s}im ve dikkat mekanizmalar{\i}n{\i} birle\c{s}tirmi\c{s}tir.
+
+\"{O}z-denetimli \"{o}\u{g}renme alan{\i}nda Chen ve arkada\c{s}lar{\i} \cite{chen2020simple} SimCLR \c{c}er\c{c}evesini geli\c{s}tirmi\c{s}tir. Metrik \"{o}\u{g}renme alan{\i}nda Schroff ve arkada\c{s}lar{\i} \cite{schroff2015facenet} triplet kay{\i}p fonksiyonunu, Deng ve arkada\c{s}lar{\i} \cite{deng2019arcface} ArcFace kay{\i}p fonksiyonunu \"{o}nermi\c{s}tir. Lin ve arkada\c{s}lar{\i} \cite{lin2017focal} focal loss ile s{\i}n{\i}f dengesizli\u{g}i problemine \c{c}\"{o}z\"{u}m getirmi\c{s}tir.
+
+% ========== III. VERİ SETİ VE ÖN İŞLEME ==========
+\section{Veri Seti ve \"{O}n \.{I}\c{s}leme}
+
+\subsection{Veri Seti}
+Bu \c{c}al{\i}\c{s}mada Kaggle platformundan elde edilen ``Vegetables'' veri seti kullan{\i}lm{\i}\c{s}t{\i}r. Veri seti, 23 farkl{\i} sebze s{\i}n{\i}f{\i}ndan toplam 6.170 g\"{o}r\"{u}nt\"{u} i\c{c}ermektedir. Her g\"{o}r\"{u}nt\"{u} RGB renk uzay{\i}nda ve farkl{\i} \c{c}\"{o}z\"{u}n\"{u}rl\"{u}klerde kaydedilmi\c{s}tir. Veri seti tabakal{\i} \"{o}rnekleme ile \%70 e\u{g}itim, \%15 do\u{g}rulama ve \%15 test olmak \"{u}zere \"{u}\c{c} alt k\"{u}meye ayr{\i}lm{\i}\c{s}t{\i}r.
+
+\subsection{Ke\c{s}ifsel Veri Analizi}
+Ke\c{s}ifsel veri analizi a\c{s}amas{\i}nda s{\i}n{\i}f da\u{g}{\i}l{\i}m{\i}, g\"{o}r\"{u}nt\"{u} boyut da\u{g}{\i}l{\i}m{\i}, kalite metrikleri (bulan{\i}kl{\i}k, kontrast, parlakl{\i}k) ve RGB histogram analizleri ger\c{c}ekle\c{s}tirilmi\c{s}tir. S{\i}n{\i}f dengesizlik oran{\i} incelenerek veri setinin genel yap{\i}s{\i} de\u{g}erlendirilmi\c{s}tir. S{\i}n{\i}flar aras{\i} kosin\"{u}s benzerlik matrisi ile g\"{o}rsel benzerlikleri y\"{u}ksek olan s{\i}n{\i}flar belirlenmi\c{s}tir.
+
+\subsection{\"{O}znitelik M\"{u}hendisli\u{g}i}
+Klasik makine \"{o}\u{g}renmesi modelleri i\c{c}in toplam 500'den fazla el yap{\i}m{\i} \"{o}znitelik \c{c}{\i}kar{\i}lm{\i}\c{s}t{\i}r. \c{C}{\i}kar{\i}lan \"{o}znitelikler a\c{s}a\u{g}{\i}daki kategorilerden olu\c{s}maktad{\i}r:
+
+\begin{itemize}
+    \item \textbf{Renk Histogram \"{O}znitelikleri (192):} HSV ve LAB renk uzaylar{\i}nda 32 kutulu histogramlar (3 kanal $\times$ 32 kutu $\times$ 2 renk uzay{\i}).
+    \item \textbf{Doku \"{O}znitelikleri (30):} Yerel \.{I}kili \"{O}r\"{u}nt\"{u}ler (LBP) \cite{ojala2002multiresolution} ile 10 \"{o}znitelik ve Gri D\"{u}zey E\c{s}-Olu\c{s}um Matrisi (GLCM) \cite{haralick1973textural} ile 20 \"{o}znitelik (5 \"{o}zellik $\times$ 4 a\c{c}{\i}).
+    \item \textbf{Bi\c{c}im \"{O}znitelikleri (191):} Y\"{o}nl\"{u} Gradyan Histogramlar{\i} (HOG) \cite{dalal2005histograms} ile 184 \"{o}znitelik ve Hu Momentleri ile 7 \"{o}znitelik.
+    \item \textbf{Kenar \"{O}znitelikleri (3):} Canny kenar yo\u{g}unlu\u{g}u, Sobel gradyan b\"{u}y\"{u}kl\"{u}\u{g}\"{u} (ortalama ve standart sapma).
+    \item \textbf{\.{I}statistiksel \"{O}znitelikler (18):} RGB ve HSV kanallar{\i}nda ortalama, standart sapma, \c{c}arp{\i}kl{\i}k ve bas{\i}kl{\i}k.
+    \item \textbf{Frekans Alan{\i} \"{O}znitelikleri (4):} FFT enerjisi, entropi, d\"{u}\c{s}\"{u}k ve y\"{u}ksek frekans oranlar{\i}.
+\end{itemize}
+
+Boyut indirgeme y\"{o}ntemleri olarak t-SNE \cite{vandermaaten2008visualizing} ve UMAP \cite{mcinnes2018umap} kullan{\i}larak \"{o}znitelik uzay{\i} g\"{o}rselle\c{s}tirilmi\c{s}tir. Ayr{\i}ca PCA ile \%95 varyans{\i} koruyan bile\c{s}enler ve LDA ile s{\i}n{\i}f ay{\i}r{\i}c{\i} bile\c{s}enler elde edilmi\c{s}tir.
+
+% ========== IV. KLASİK MAKİNE ÖĞRENMESİ ==========
+\section{Klasik Makine \"{O}\u{g}renmesi}
+\c{C}{\i}kar{\i}lan el yap{\i}m{\i} \"{o}znitelikler kullan{\i}larak 10 farkl{\i} klasik makine \"{o}\u{g}renmesi modeli e\u{g}itilmi\c{s} ve de\u{g}erlendirilmi\c{s}tir. T\"{u}m modeller StandardScaler ile \"{o}l\c{c}eklendirilen \"{o}znitelikler \"{u}zerinde \c{c}al{\i}\c{s}t{\i}r{\i}lm{\i}\c{s}t{\i}r.
+
+\subsection{Kullan{\i}lan Modeller}
+\begin{itemize}
+    \item \textbf{Destek Vekt\"{o}r Makineleri (SVM):} RBF, do\u{g}rusal ve polinom \c{c}ekirdekli \"{u}\c{c} varyant \cite{cortes1995support}.
+    \item \textbf{Topluluk Y\"{o}ntemleri:} Random Forest (200 a\u{g}a\c{c}) \cite{breiman2001random}, XGBoost \cite{chen2016xgboost} (Optuna \cite{akiba2019optuna} ile optimize edilmi\c{s}), LightGBM \cite{ke2017lightgbm} (Optuna ile optimize edilmi\c{s}), CatBoost (200 iterasyon).
+    \item \textbf{Uzakl{\i}k Tabanl{\i}:} KNN ($k=5$, 3--11 aral{\i}\u{g}{\i}nda ayarl{\i}).
+    \item \textbf{Olas{\i}l{\i}ksal:} Lojistik Regresyon (One-vs-Rest) ve Gauss Na\"{\i}ve Bayes.
+\end{itemize}
+
+Hiperparametre optimizasyonu i\c{c}in GridSearchCV ve Optuna kullan{\i}lm{\i}\c{s}, model g\"{u}venilirli\u{g}i tabakal{\i} 5 katl{\i} \c{c}apraz do\u{g}rulama ile de\u{g}erlendirilmi\c{s}tir.
+
+\subsection{Sonu\c{c}lar}
+Tablo~\ref{tab:classical_ml} klasik makine \"{o}\u{g}renmesi modellerinin kar\c{s}{\i}la\c{s}t{\i}rmal{\i} sonu\c{c}lar{\i}n{\i} g\"{o}stermektedir.
+
+\begin{table}[htbp]
+\centering
+\caption{Klasik Makine \"{O}\u{g}renmesi Modelleri Performans Kar\c{s}{\i}la\c{s}t{\i}rmas{\i}}
+\label{tab:classical_ml}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Model} & \textbf{Do\u{g}r.} & \textbf{Makro F1} & \textbf{CV Ort.} \\
+\midrule
+Random Forest      & 0,6333 & 0,4519 & 0,4071 \\
+SVM-Do\u{g}rusal  & 0,5000 & 0,3102 & 0,3286 \\
+LightGBM           & 0,4667 & 0,2961 & 0,2214 \\
+Gauss NB           & 0,4333 & 0,2602 & 0,1571 \\
+Lojistik Reg.      & 0,4333 & 0,2809 & 0,3500 \\
+SVM-RBF            & 0,4000 & 0,2308 & 0,1786 \\
+XGBoost            & 0,3667 & 0,1981 & 0,3000 \\
+KNN ($k$=5)        & 0,3333 & 0,1684 & 0,2500 \\
+CatBoost           & 0,3333 & 0,1555 & 0,2786 \\
+SVM-Polinom        & 0,1667 & 0,0159 & 0,1429 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+En y\"{u}ksek do\u{g}ruluk Random Forest modeli ile \%63,33 olarak elde edilmi\c{s}tir. El yap{\i}m{\i} \"{o}zniteliklerin 23 s{\i}n{\i}fl{\i} bir problemde s{\i}n{\i}rl{\i} ay{\i}r{\i}c{\i} g\"{u}\c{c} sundu\u{g}u g\"{o}r\"{u}lm\"{u}\c{s}t\"{u}r. Bu durum, derin \"{o}\u{g}renme yakla\c{s}{\i}mlar{\i}n{\i}n gereklili\u{g}ini ortaya koymaktad{\i}r.
+
+% ========== V. CNN VE TRANSFER ÖĞRENME ==========
+\section{CNN ve Transfer \"{O}\u{g}renme}
+Bu a\c{s}amada hem s{\i}f{\i}rdan tasarlanan \"{o}zel CNN mimarileri hem de ImageNet \"{u}zerinde \"{o}n-e\u{g}itilmi\c{s} modeller de\u{g}erlendirilmi\c{s}tir.
+
+\subsection{\"{O}zel CNN Mimarileri}
+\"{U}\c{c} farkl{\i} \"{o}zel CNN mimarisi tasarlanm{\i}\c{s}t{\i}r:
+\begin{itemize}
+    \item \textbf{SimpleCNN:} 4 evrili\c{s}im blo\u{g}u (32$\rightarrow$64$\rightarrow$128$\rightarrow$256 kanal).
+    \item \textbf{ResidualCNN:} Art{\i}k ba\u{g}lant{\i}l{\i}, kademeli alt-\"{o}rnekleme.
+    \item \textbf{DepthwiseSeparableCNN:} Derinlemesine ayr{\i}l{\i}k evrili\c{s}imli hafif mimari.
+\end{itemize}
+
+\subsection{Transfer \"{O}\u{g}renme Modelleri}
+D\"{o}rt farkl{\i} \"{o}n-e\u{g}itilmi\c{s} model ince ayar (fine-tuning) y\"{o}ntemiyle uyarlanm{\i}\c{s}t{\i}r:
+\begin{itemize}
+    \item \textbf{EfficientNetV2-S} \cite{tan2021efficientnetv2}: Verimli \"{o}l\c{c}ekleme ile h{\i}zl{\i} e\u{g}itim (20,2M parametre).
+    \item \textbf{ConvNeXt-Tiny} \cite{liu2022convnet}: Modernize edilmi\c{s} CNN tasar{\i}m{\i} (27,8M parametre).
+    \item \textbf{MobileNetV3-Large} \cite{howard2019searching}: Mobil cihaz odakl{\i} hafif mimari (4,2M parametre).
+    \item \textbf{DenseNet-121} \cite{huang2017densely}: Yo\u{g}un ba\u{g}lant{\i}l{\i} mimari (7,0M parametre).
+\end{itemize}
+
+\subsection{E\u{g}itim Stratejisi}
+\.{I}ki a\c{s}amal{\i} bir e\u{g}itim stratejisi uygulanm{\i}\c{s}t{\i}r:
+\begin{enumerate}
+    \item \textbf{Faz~1 (5 epoch):} Omurga dondurulmu\c{s}, yaln{\i}zca s{\i}n{\i}fland{\i}r{\i}c{\i} ba\c{s}l{\i}k e\u{g}itilmi\c{s}tir.
+    \item \textbf{Faz~2 (15 epoch):} Kademeli \c{c}\"{o}zme ile ay{\i}r{\i}mc{\i} \"{o}\u{g}renme oranlar{\i} ($10^{-3}$--$10^{-4}$).
+\end{enumerate}
+
+Veri art{\i}r{\i}m i\c{c}in Albumentations k\"{u}t\"{u}phanesi kullan{\i}lm{\i}\c{s}; RandomResizedCrop, HorizontalFlip, VerticalFlip, RandomBrightnessContrast, HueSaturationValue, ShiftScaleRotate, GaussNoise, CoarseDropout ve GridDistortion d\"{o}n\"{u}\c{s}\"{u}mleri uygulanm{\i}\c{s}t{\i}r. Optimizasyon i\c{c}in AdamW \cite{loshchilov2017adamw} (a\u{g}{\i}rl{\i}k azalmas{\i} 0,01), etiket yumu\c{s}atmal{\i} CrossEntropyLoss (0,1) ve CosineAnnealingWarmRestarts \"{o}\u{g}renme oran{\i} takvimi kullan{\i}lm{\i}\c{s}t{\i}r. Erken durdurma (patience=7) ve otomatik kar{\i}\c{s}{\i}k hassasiyet (AMP) e\u{g}itimi etkinle\c{s}tirilmi\c{s}tir.
+
+\subsection{Sonu\c{c}lar}
+Tablo~\ref{tab:cnn} CNN ve transfer \"{o}\u{g}renme modellerinin sonu\c{c}lar{\i}n{\i} sunmaktad{\i}r.
+
+\begin{table}[htbp]
+\centering
+\caption{CNN ve Transfer \"{O}\u{g}renme Sonu\c{c}lar{\i}}
+\label{tab:cnn}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Model} & \textbf{Do\u{g}r.} & \textbf{F1} & \textbf{Param.} \\
+\midrule
+EfficientNetV2-S   & 1,0000 & 1,0000 & 20,2M \\
+ConvNeXt-Tiny      & 1,0000 & 1,0000 & 27,8M \\
+MobileNetV3-Large  & 0,9989 & 0,9990 & 4,2M  \\
+DenseNet-121       & 0,9989 & 0,9990 & 7,0M  \\
+DepthwiseSep. CNN  & 0,9298 & 0,9173 & 0,2M  \\
+SimpleCNN          & 0,8855 & 0,8548 & 2,5M  \\
+ResidualCNN        & 0,8801 & 0,8376 & 2,1M  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Transfer \"{o}\u{g}renme modelleri, \"{o}zel CNN mimarilerine k{\i}yasla belirgin \c{s}ekilde \"{u}st\"{u}n performans sergilemi\c{s}tir. EfficientNetV2-S ve ConvNeXt-Tiny \%100 test do\u{g}rulu\u{g}u elde etmi\c{s}tir. En hafif transfer \"{o}\u{g}renme modeli olan MobileNetV3-Large, yaln{\i}zca 4,2M parametre ile \%99,89 do\u{g}ruluk sa\u{g}lam{\i}\c{s}t{\i}r.
+
+% ========== VI. GÖRÜ DÖNÜŞTÜRÜCÜLERİ ==========
+\section{G\"{o}r\"{u} D\"{o}n\"{u}\c{s}t\"{u}r\"{u}c\"{u}leri}
+Bu b\"{o}l\"{u}mde saf transformer ve hibrit CNN-transformer mimarileri de\u{g}erlendirilmi\c{s}tir.
+
+\subsection{Transformer Mimarileri}
+\begin{itemize}
+    \item \textbf{ViT-Small/16} \cite{dosovitskiy2020image}: 16$\times$16 yama g\"{o}m\"{u}lmeleri ile saf transformer (21,7M param.).
+    \item \textbf{DeiT-Small} \cite{touvron2021training}: Veri-verimli ViT, distilasyon tokeni ile.
+    \item \textbf{Swin-Tiny} \cite{liu2021swin}: Kayma pencereli hiyerar\c{s}ik transformer (27,5M param.).
+\end{itemize}
+
+\subsection{Hibrit Mimariler}
+\begin{itemize}
+    \item \textbf{CoAtNet-0} \cite{dai2021coatnet}: CNN-transformer birle\c{s}imi (26,7M param.).
+    \item \textbf{MaxViT-Tiny}: \c{C}ok eksenli dikkat mekanizmas{\i}.
+    \item \textbf{EfficientFormer-L1} \cite{li2022efficientformer}: MobileNet h{\i}z{\i}nda ViT (11,4M param.).
+\end{itemize}
+
+\subsection{Dikkat Haritas{\i} G\"{o}rselle\c{s}tirme ve A\c{c}{\i}klanabilirlik}
+ViT modelinin CLS tokeni dikkat a\u{g}{\i}rl{\i}klar{\i} g\"{o}rselle\c{s}tirilerek modelin hangi b\"{o}lgelere odakland{\i}\u{g}{\i} analiz edilmi\c{s}tir. Ayr{\i}ca SHAP DeepExplainer \cite{lundberg2017unified} ile \"{o}znitelik \"{o}nem s{\i}ralamalar{\i} elde edilmi\c{s}tir.
+
+\subsection{Bilgi Distilasyonu}
+B\"{u}y\"{u}k bir \"{o}\u{g}retmen modelden k\"{u}\c{c}\"{u}k bir \"{o}\u{g}renci modele bilgi aktar{\i}m{\i} ger\c{c}ekle\c{s}tirilmi\c{s}tir \cite{hinton2015distilling}. \"{O}\u{g}renci model yaln{\i}zca 388~KB boyutunda olup y\"{u}ksek do\u{g}ruluk sa\u{g}lam{\i}\c{s}t{\i}r. Distilasyon kayb{\i} olarak s{\i}cakl{\i}k \"{o}l\c{c}ekli softmax \"{u}zerinden KL-uzakl{\i}\u{g}{\i} kullan{\i}lm{\i}\c{s}t{\i}r.
+
+\subsection{Sonu\c{c}lar}
+Tablo~\ref{tab:vit} g\"{o}r\"{u} d\"{o}n\"{u}\c{s}t\"{u}r\"{u}c\"{u}lerin sonu\c{c}lar{\i}n{\i} g\"{o}stermektedir.
+
+\begin{table}[htbp]
+\centering
+\caption{G\"{o}r\"{u} D\"{o}n\"{u}\c{s}t\"{u}r\"{u}c\"{u} Modelleri Performans{\i}}
+\label{tab:vit}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{llcc}
+\toprule
+\textbf{Model} & \textbf{Tip} & \textbf{Do\u{g}r.} & \textbf{Param.} \\
+\midrule
+ViT-Small/16        & Transformer & 1,0000 & 21,7M \\
+CoAtNet-0           & Hibrit      & 1,0000 & 26,7M \\
+EfficientFormer-L1  & Hibrit      & 1,0000 & 11,4M \\
+Swin-Tiny           & Transformer & 0,9946 & 27,5M \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+ViT-Small/16, CoAtNet-0 ve EfficientFormer-L1 modelleri \%100 test do\u{g}rulu\u{g}u elde etmi\c{s}tir. EfficientFormer-L1, 11,4M parametre ile en verimli model olarak \"{o}ne \c{c}{\i}km{\i}\c{s}t{\i}r. Swin-Tiny ise \%99,46 do\u{g}ruluk ile yak{\i}n performans g\"{o}stermi\c{s}tir.
+
+% ========== VII. İLERİ DÜZEY TEKNİKLER ==========
+\section{\.{I}leri D\"{u}zey Teknikler}
+Bu b\"{o}l\"{u}mde modern derin \"{o}\u{g}renme teknikleri de\u{g}erlendirilmi\c{s}tir.
+
+\subsection{SimCLR \"{O}z-Denetimli \"{O}\u{g}renme}
+SimCLR \c{c}er\c{c}evesi \cite{chen2020simple} ile etiket kullanmadan g\"{o}rsel temsiller \"{o}\u{g}renilmi\c{s}tir. ResNet-18 omurgas{\i} ve MLP projeksiyon ba\c{s}l{\i}\u{g}{\i} kullan{\i}lm{\i}\c{s}, NT-Xent (Normalize Edilmi\c{s} S{\i}cakl{\i}k \"{O}l\c{c}ekli \c{C}apraz Entropi) kayb{\i} ile e\u{g}itim yap{\i}lm{\i}\c{s}t{\i}r. \.{I}kili art{\i}r{\i}m boru hatt{\i} (rastgele k{\i}rpma, renk bozulmas{\i}, Gauss bulan{\i}kla\c{s}t{\i}rma) uygulanm{\i}\c{s}t{\i}r. Do\u{g}rusal sondaj ile KNN-5 s{\i}n{\i}fland{\i}r{\i}c{\i} kullan{\i}larak \%90,76 do\u{g}ruluk elde edilmi\c{s}tir.
+
+\subsection{Metrik \"{O}\u{g}renme}
+\.{I}ki farkl{\i} metrik \"{o}\u{g}renme yakla\c{s}{\i}m{\i} uygulanm{\i}\c{s}t{\i}r:
+\begin{itemize}
+    \item \textbf{Triplet Kay{\i}p} \cite{schroff2015facenet}: \c{C}apa-pozitif-negatif \"{u}\c{c}l\"{u}leri ile ay{\i}r{\i}mc{\i} g\"{o}m\"{u}lmeler \"{o}\u{g}renilmi\c{s}tir (marj = 0,5).
+    \item \textbf{ArcFace} \cite{deng2019arcface}: Toplamsal a\c{c}{\i}sal marj kayb{\i} ile g\"{o}m\"{u}lme boyutu 256, \"{o}l\c{c}ek 30,0 ve marj 0,5 parametreleri kullan{\i}lm{\i}\c{s}t{\i}r.
+\end{itemize}
+
+\subsection{M\"{u}fredat \"{O}\u{g}renmesi}
+Bengio ve arkada\c{s}lar{\i} \cite{bengio2009curriculum} taraf{\i}ndan \"{o}nerilen m\"{u}fredat \"{o}\u{g}renmesi yakla\c{s}{\i}m{\i} uygulanm{\i}\c{s}t{\i}r. E\u{g}itim, kolay \"{o}rneklerden ba\c{s}layarak kademeli olarak zor \"{o}rneklere ge\c{c}ecek \c{s}ekilde d\"{u}zenlenmi\c{s}tir.
+
+\subsection{Focal Loss}
+Lin ve arkada\c{s}lar{\i} \cite{lin2017focal} taraf{\i}ndan \"{o}nerilen focal loss, zor \"{o}rneklere odaklanarak s{\i}n{\i}f dengesizli\u{g}i problemine \c{c}\"{o}z\"{u}m sunmaktad{\i}r. $FL = -\alpha(1-p)^\gamma \log(p)$ form\"{u}l\"{u} ile $\gamma = 2.0$ parametresi kullan{\i}lm{\i}\c{s}t{\i}r. \c{C}apraz entropi kayb{\i} ile kar\c{s}{\i}la\c{s}t{\i}r{\i}ld{\i}\u{g}{\i}nda, focal loss \%87,85 do\u{g}ruluk elde etmi\c{s}tir.
+
+\subsection{\c{C}ok \"{O}l\c{c}ekli \"{O}znitelik Birle\c{s}tirme (FPN)}
+\"{O}znitelik Piramit A\u{g}{\i} (FPN) \cite{lin2017feature} ile farkl{\i} \"{o}l\c{c}eklerden \"{o}znitelikler birle\c{s}tirilmi\c{s}tir. Yanal ba\u{g}lant{\i}lar i\c{c}in 1$\times$1 evrili\c{s}imler ve yukar{\i}dan a\c{s}a\u{g}{\i} yol ile \"{u}st-\"{o}rnekleme ve birle\c{s}tirme uygulanm{\i}\c{s}t{\i}r.
+
+\subsection{Sinir Mimarisi Arama (NAS)}
+Optuna \cite{akiba2019optuna} \c{c}er\c{c}evesi kullan{\i}larak otomatik mimari arama ger\c{c}ekle\c{s}tirilmi\c{s}tir. Arama uzay{\i}; katman say{\i}s{\i} (3--8), kanal say{\i}s{\i} (32--256), \"{o}\u{g}renme oran{\i} (log-\"{u}niform) ve b{\i}rakma oranlar{\i}ndan olu\c{s}maktad{\i}r. En iyi bulunan mimari: 4 katman, 64 filtre, \%87,04 do\u{g}ruluk.
+
+\subsection{Sonu\c{c}lar}
+Tablo~\ref{tab:advanced} ileri d\"{u}zey tekniklerin kar\c{s}{\i}la\c{s}t{\i}rmal{\i} sonu\c{c}lar{\i}n{\i} g\"{o}stermektedir.
+
+\begin{table}[htbp]
+\centering
+\caption{\.{I}leri D\"{u}zey Teknikler Performans Kar\c{s}{\i}la\c{s}t{\i}rmas{\i}}
+\label{tab:advanced}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Y\"{o}ntem} & \textbf{Kategori} & \textbf{Do\u{g}r.} \\
+\midrule
+CE Kayb{\i} (Temel)     & Baseline    & 0,9258 \\
+SimCLR (Do\u{g}r. Sond.) & \"{O}z-Denetimli & 0,9076 \\
+Focal Loss              & Kay{\i}p M\"{u}h.  & 0,8785 \\
+NAS En \.{I}yi           & NAS         & 0,8704 \\
+FPN \c{C}ok \"{O}l\c{c}ekli & Mimari     & 0,6910 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+SimCLR \"{o}z-denetimli \"{o}\u{g}renme, etiket kullanmadan \%90,76 do\u{g}ruluk elde ederek umut vadeden sonu\c{c}lar sunmu\c{s}tur. Temel CE kayb{\i} \%92,58 ile en y\"{u}ksek do\u{g}rulu\u{g}u sa\u{g}lam{\i}\c{s}t{\i}r.
+
+% ========== VIII. TOPLULUK YÖNTEMLERİ ==========
+\section{Topluluk Y\"{o}ntemleri}
+T\"{u}m modellerin olas{\i}l{\i}k \c{c}{\i}kt{\i}lar{\i} birle\c{s}tirilerek alt{\i} farkl{\i} topluluk stratejisi uygulanm{\i}\c{s}t{\i}r.
+
+\subsection{Oylama Y\"{o}ntemleri}
+\begin{itemize}
+    \item \textbf{Sert Oylama:} Her model bir s{\i}n{\i}f tahmin eder; \c{c}o\u{g}unluk oyu nihai tahmindir.
+    \item \textbf{Yumu\c{s}ak Oylama:} Tahmin olas{\i}l{\i}klar{\i}n{\i}n ortalamas{\i} al{\i}n{\i}r.
+    \item \textbf{A\u{g}{\i}rl{\i}kl{\i} Yumu\c{s}ak Oylama:} Her modelin a\u{g}{\i}rl{\i}\u{g}{\i}, do\u{g}rulu\u{g}unun karesi ile orant{\i}l{\i}d{\i}r.
+\end{itemize}
+
+\subsection{Y{\i}\u{g}{\i}nlama (Stacking)}
+Wolpert \cite{wolpert1992stacked} taraf{\i}ndan \"{o}nerilen y{\i}\u{g}{\i}nlama y\"{o}ntemi uygulanm{\i}\c{s}t{\i}r. Seviye-0 modellerin olas{\i}l{\i}k \c{c}{\i}kt{\i}lar{\i} birle\c{s}tirilerek meta-\"{o}znitelikler olu\c{s}turulmu\c{s} ve \"{u}\c{c} farkl{\i} meta-\"{o}\u{g}renici e\u{g}itilmi\c{s}tir:
+\begin{itemize}
+    \item \textbf{XGBoost} (200 tahmin edici, derinlik 5)
+    \item \textbf{LightGBM} (200 tahmin edici, derinlik 5)
+    \item \textbf{MLP} (256$\rightarrow$128 gizli katmanlar)
+\end{itemize}
+
+\subsection{Di\u{g}er Y\"{o}ntemler}
+\begin{itemize}
+    \item \textbf{S{\i}ra Ortalamalama:} Her model i\c{c}in s{\i}n{\i}flar olas{\i}l{\i}\u{g}a g\"{o}re s{\i}ralan{\i}r; s{\i}ra ortalamalar{\i} al{\i}n{\i}r.
+    \item \textbf{A\c{c}g\"{o}zl\"{u} \.{I}leri Se\c{c}im:} Bo\c{s} k\"{u}meden ba\c{s}layarak iteratif olarak en iyi model eklenir.
+\end{itemize}
+
+\subsection{\.{I}statistiksel Testler}
+Model kar\c{s}{\i}la\c{s}t{\i}rmalar{\i} i\c{c}in McNemar testi (iki s{\i}n{\i}fland{\i}r{\i}c{\i} kar\c{s}{\i}la\c{s}t{\i}rmas{\i}) ve Friedman testi (\c{c}oklu s{\i}n{\i}fland{\i}r{\i}c{\i} s{\i}ralamas{\i}) uygulanm{\i}\c{s}t{\i}r.
+
+\subsection{Sonu\c{c}lar}
+Tablo~\ref{tab:ensemble} topluluk y\"{o}ntemlerinin sonu\c{c}lar{\i}n{\i} g\"{o}stermektedir.
+
+\begin{table}[htbp]
+\centering
+\caption{Topluluk ve Bireysel Modellerin Genel Kar\c{s}{\i}la\c{s}t{\i}rmas{\i}}
+\label{tab:ensemble}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{llcc}
+\toprule
+\textbf{Model} & \textbf{Tip} & \textbf{Do\u{g}r.} & \textbf{Kappa} \\
+\midrule
+ConvNeXt-Tiny       & Bireysel & 1,0000 & 1,0000 \\
+EfficientNetV2-S    & Bireysel & 1,0000 & 1,0000 \\
+A\c{c}g\"{o}zl\"{u} Se\c{c}im & Topluluk & 1,0000 & 1,0000 \\
+A\u{g}{\i}rl. Yum. Oylama  & Topluluk & 1,0000 & 1,0000 \\
+Yumu\c{s}ak Oylama     & Topluluk & 1,0000 & 1,0000 \\
+Sert Oylama         & Topluluk & 1,0000 & 1,0000 \\
+DenseNet-121        & Bireysel & 0,9989 & 0,9988 \\
+MobileNetV3-Large   & Bireysel & 0,9989 & 0,9988 \\
+S{\i}ra Ortalama     & Topluluk & 0,9968 & 0,9965 \\
+DepthwiseSep. CNN   & Bireysel & 0,9298 & 0,9247 \\
+SimpleCNN           & Bireysel & 0,8855 & 0,8771 \\
+ResidualCNN         & Bireysel & 0,8801 & 0,8714 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Sert oylama, yumu\c{s}ak oylama, a\u{g}{\i}rl{\i}kl{\i} yumu\c{s}ak oylama ve a\c{c}g\"{o}zl\"{u} se\c{c}im y\"{o}ntemleri \%100 do\u{g}ruluk ve 1,0 Cohen's Kappa de\u{g}eri elde etmi\c{s}tir. S{\i}ra ortalamalama y\"{o}ntemi \%99,68 do\u{g}ruluk ile hafif bir d\"{u}\c{s}\"{u}\c{s} g\"{o}stermi\c{s}tir.
+
+% ========== IX. TARTIŞMA ==========
+\section{Tart{\i}\c{s}ma}
+Bu \c{c}al{\i}\c{s}man{\i}n sonu\c{c}lar{\i} \c{c}e\c{s}itli \"{o}nemli bulgular ortaya koymaktad{\i}r:
+
+\textbf{El Yap{\i}m{\i} \"{O}znitelikler vs. Derin \"{O}znitelikler:} Klasik makine \"{o}\u{g}renmesi modelleri el yap{\i}m{\i} \"{o}zniteliklerle en fazla \%63,33 do\u{g}ruluk elde ederken, derin \"{o}\u{g}renme modelleri \%100'e ula\c{s}m{\i}\c{s}t{\i}r. Bu, 23 s{\i}n{\i}fl{\i} sebze s{\i}n{\i}fland{\i}rma probleminde derin \"{o}\u{g}renmenin \"{u}st\"{u}nl\"{u}\u{g}\"{u}n\"{u} a\c{c}{\i}k\c{c}a g\"{o}stermektedir.
+
+\textbf{Transfer \"{O}\u{g}renme Etkisi:} \"{O}zel CNN mimarileri \%88--93 aral{\i}\u{g}{\i}nda performans g\"{o}sterirken, transfer \"{o}\u{g}renme modelleri \%99,89--100 aral{\i}\u{g}{\i}na ula\c{s}m{\i}\c{s}t{\i}r. ImageNet \"{u}zerinde \"{o}n-e\u{g}itimin sa\u{g}lad{\i}\u{g}{\i} genel g\"{o}rsel \"{o}zniteliklerin sebze s{\i}n{\i}fland{\i}rmas{\i}na ba\c{s}ar{\i}yla aktar{\i}ld{\i}\u{g}{\i} g\"{o}r\"{u}lm\"{u}\c{s}t\"{u}r.
+
+\textbf{Transformer Performans{\i}:} ViT ve hibrit modeller, CNN tabanlı modeller ile benzer veya \"{u}st\"{u}n performans sergilemi\c{s}tir. \"{O}zellikle EfficientFormer-L1, 11,4M parametre ile \%100 do\u{g}ruluk sa\u{g}layarak parametre verimlili\u{g}i a\c{c}{\i}s{\i}ndan \"{o}ne \c{c}{\i}km{\i}\c{s}t{\i}r.
+
+\textbf{\"{O}z-Denetimli \"{O}\u{g}renme:} SimCLR, etiketsiz verilerle \%90,76 do\u{g}ruluk elde ederek, etiketleme maliyetinin y\"{u}ksek oldu\u{g}u senaryolarda ge\c{c}erli bir alternatif oldu\u{g}unu g\"{o}stermi\c{s}tir.
+
+\textbf{Topluluk Y\"{o}ntemleri:} Birden fazla modelin birle\c{s}tirilmesi, bireysel model hatalar{\i}n{\i} azaltarak daha g\"{u}venilir tahminler \"{u}retmi\c{s}tir. \"{O}zellikle oylama tabanl{\i} y\"{o}ntemler m\"{u}kemmel sonu\c{c}lar vermi\c{s}tir.
+
+\textbf{Model Verimlili\u{g}i:} MobileNetV3-Large (4,2M param., \%99,89) ve EfficientFormer-L1 (11,4M param., \%100) g\"{o}m\"{u}l\"{u} sistemler ve mobil cihazlar i\c{c}in uygun se\c{c}enekler sunmaktad{\i}r.
+
+% ========== X. SONUÇ ==========
+\section{Sonu\c{c}}
+Bu \c{c}al{\i}\c{s}mada, 23 s{\i}n{\i}fl{\i} sebze g\"{o}r\"{u}nt\"{u}s\"{u} s{\i}n{\i}fland{\i}rmas{\i} i\c{c}in klasik makine \"{o}\u{g}renmesinden topluluk y\"{o}ntemlerine kadar geni\c{s} bir yelpazede kar\c{s}{\i}la\c{s}t{\i}rmal{\i} analiz ger\c{c}ekle\c{s}tirilmi\c{s}tir. Elde edilen ana bulgular \c{s}unlard{\i}r:
+
+\begin{enumerate}
+    \item El yap{\i}m{\i} \"{o}zniteliklerle klasik ML modelleri en fazla \%63,33 do\u{g}ruluk elde etmi\c{s}tir.
+    \item Transfer \"{o}\u{g}renme modelleri (EfficientNetV2-S, ConvNeXt-Tiny) \%100 test do\u{g}rulu\u{g}una ula\c{s}m{\i}\c{s}t{\i}r.
+    \item G\"{o}r\"{u} d\"{o}n\"{u}\c{s}t\"{u}r\"{u}c\"{u}leri (ViT-Small/16, CoAtNet-0, EfficientFormer-L1) de \%100 do\u{g}ruluk sa\u{g}lam{\i}\c{s}t{\i}r.
+    \item SimCLR \"{o}z-denetimli \"{o}\u{g}renme etiketsiz verilerle \%90,76 do\u{g}ruluk elde etmi\c{s}tir.
+    \item Topluluk y\"{o}ntemleri (sert/yumu\c{s}ak oylama, a\u{g}{\i}rl{\i}kl{\i} oylama) \%100 do\u{g}ruluk ve 1,0 Cohen's Kappa de\u{g}eri sa\u{g}lam{\i}\c{s}t{\i}r.
+\end{enumerate}
+
+Gelecek \c{c}al{\i}\c{s}malarda daha b\"{u}y\"{u}k ve dengesiz veri setleri \"{u}zerinde de\u{g}erlendirme, ger\c{c}ek zamanl{\i} s{\i}n{\i}fland{\i}rma sistemi geli\c{s}tirme, ONNX ile model optimizasyonu ve k\"{u}\c{c}\"{u}k veri senaryolar{\i}nda few-shot \"{o}\u{g}renme yakla\c{s}{\i}mlar{\i}n{\i}n ara\c{s}t{\i}r{\i}lmas{\i} planlanmaktad{\i}r.
+
+% ========== KAYNAKLAR ==========
+\balance
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
