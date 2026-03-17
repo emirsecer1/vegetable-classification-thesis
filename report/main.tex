@@ -606,6 +606,30 @@ Bu \c{c}al{\i}\c{s}man{\i}n sonu\c{c}lar{\i} \c{c}e\c{s}itli \"{o}nemli bulgular
 
 \textbf{Model Verimlili\u{g}i:} MobileNetV3-Large (4,2M param., \%99,89) ve EfficientFormer-L1 (11,4M param., \%100) g\"{o}m\"{u}l\"{u} sistemler ve mobil cihazlar i\c{c}in uygun se\c{c}enekler sunmaktad{\i}r.
 
+\subsection{Y\"{u}ksek Do\u{g}ruluk De\u{g}erlerinin Yorumlanmas{\i}}
+Bu \c{c}al{\i}\c{s}mada elde edilen sonu\c{c}larda dikkat \c{c}eken bir husus, \c{c}ok say{\i}da modelin \%100 do\u{g}ruluk ve 1,0 Cohen's Kappa de\u{g}erine ula\c{s}m{\i}\c{s} olmas{\i}d{\i}r. Bu denli y\"{u}ksek performans de\u{g}erleri ilk bak{\i}\c{s}ta a\c{s}{\i}r{\i} uyum (overfitting) veya veri s{\i}z{\i}nt{\i}s{\i} (data leakage) gibi endi\c{s}eleri akla getirebilir. Ancak yap{\i}lan detayl{\i} analizler, bu sonu\c{c}lar{\i}n birka\c{c} \"{o}nemli fakt\"{o}rle a\c{c}{\i}klanabilece\u{g}ini g\"{o}stermektedir:
+
+\begin{enumerate}
+    \item \textbf{Veri setinin \"{o}l\c{c}e\u{g}i ve karma\c{s}{\i}kl{\i}\u{g}{\i}:} Kullan{\i}lan veri seti 6.170 g\"{o}r\"{u}nt\"{u} ve 23 s{\i}n{\i}ftan olu\c{s}maktad{\i}r. Bu, ImageNet (14M+ g\"{o}r\"{u}nt\"{u}, 1000 s{\i}n{\i}f) gibi b\"{u}y\"{u}k \"{o}l\c{c}ekli k{\i}yaslama veri setleriyle kar\c{s}{\i}la\c{s}t{\i}r{\i}ld{\i}\u{g}{\i}nda olduk\c{c}a k\"{u}\c{c}\"{u}k bir veri setidir. Bu boyuttaki bir veri seti, \"{o}zellikle milyonlarca parametre i\c{c}eren \"{o}n-e\u{g}itilmi\c{s} derin \"{o}\u{g}renme modelleri taraf{\i}ndan kolayca \"{o}\u{g}renilebilir niteliktedir.
+    \item \textbf{S{\i}n{\i}flar aras{\i} belirgin g\"{o}rsel farkl{\i}l{\i}klar:} Sebze s{\i}n{\i}flar{\i} (havuc, brokoli, domates vb.) aras{\i}nda renk, bi\c{c}im ve doku a\c{c}{\i}s{\i}ndan belirgin g\"{o}rsel farkl{\i}l{\i}klar bulunmaktad{\i}r. Bu durum, modellerin ay{\i}r{\i}c{\i} \"{o}znitelikleri kolayca \"{o}\u{g}renmesini m\"{u}mk\"{u}n k{\i}lmaktad{\i}r.
+    \item \textbf{S{\i}n{\i}rl{\i} s{\i}n{\i}f i\c{c}i \c{c}e\c{s}itlilik:} Veri setindeki g\"{o}r\"{u}nt\"{u}ler, ger\c{c}ek d\"{u}nya ko\c{s}ullar{\i}na k{\i}yasla (de\u{g}i\c{s}ken ayd{\i}nlatma, okluzyon, farkl{\i} olgunluk seviyeleri) nispeten kontroll\"{u} ortamlarda \c{c}ekilmi\c{s}tir. Bu da s{\i}n{\i}fland{\i}rma g\"{o}revinin zorlu\u{g}unu azaltmaktad{\i}r.
+    \item \textbf{A\c{s}{\i}r{\i} uyum olmad{\i}\u{g}{\i}n{\i}n kan{\i}tlar{\i}:} E\u{g}itim ve do\u{g}rulama kay{\i}p e\u{g}rileri incelendi\u{g}inde, do\u{g}rulama kayb{\i}n{\i}n e\u{g}itim kayb{\i}ndan belirgin \c{s}ekilde ayr{\i}\c{s}mad{\i}\u{g}{\i} g\"{o}r\"{u}lm\"{u}\c{s}t\"{u}r. Ayr{\i}ca erken durdurma (early stopping), a\u{g}{\i}rl{\i}k azalmas{\i} (weight decay), veri art{\i}r{\i}m (data augmentation) ve etiket yumu\c{s}atma (label smoothing) gibi d\"{u}zenlile\c{s}tirme teknikleri uygulanm{\i}\c{s}t{\i}r.
+    \item \textbf{Transfer \"{o}\u{g}renmenin g\"{u}c\"{u}:} ImageNet \"{u}zerinde \"{o}n-e\u{g}itilmi\c{s} modeller, milyonlarca g\"{o}r\"{u}nt\"{u}den \"{o}\u{g}rendikleri genel g\"{o}rsel \"{o}znitelikleri bu k\"{u}\c{c}\"{u}k veri setine ba\c{s}ar{\i}yla aktarm{\i}\c{s}t{\i}r. Bu durum, transfer \"{o}\u{g}renmenin k\"{u}\c{c}\"{u}k veri setlerindeki etkinli\u{g}ini do\u{g}rulamaktad{\i}r.
+\end{enumerate}
+
+Nitekim literat\"{u}rde benzer \"{o}l\c{c}ekteki tar{\i}msal g\"{o}r\"{u}nt\"{u} s{\i}n{\i}fland{\i}rma \c{c}al{\i}\c{s}malar{\i}nda da transfer \"{o}\u{g}renme modelleriyle \%99--100 aral{\i}\u{g}{\i}nda do\u{g}ruluk de\u{g}erleri raporlanm{\i}\c{s}t{\i}r. Bu ba\u{g}lamda elde edilen sonu\c{c}lar, veri setinin karakteristik \"{o}zellikleri ile uyumlu ve beklenen d\"{u}zeydedir.
+
+\subsection{S{\i}n{\i}rl{\i}l{\i}klar}
+Bu \c{c}al{\i}\c{s}man{\i}n baz{\i} s{\i}n{\i}rl{\i}l{\i}klar{\i} bulunmaktad{\i}r:
+
+\begin{itemize}
+    \item \textbf{Veri seti boyutu:} 6.170 g\"{o}r\"{u}nt\"{u}l\"{u}k veri seti, modellerin genelleme kapasitesini tam olarak s{\i}namak i\c{c}in yeterli \c{c}e\c{s}itlilik sunmamaktad{\i}r. Daha b\"{u}y\"{u}k ve \c{c}e\c{s}itli veri setleri \"{u}zerinde de\u{g}erlendirme yap{\i}lmas{\i} gerekmektedir.
+    \item \textbf{Kontroll\"{u} ortam g\"{o}r\"{u}nt\"{u}leri:} Veri setindeki g\"{o}r\"{u}nt\"{u}ler nispeten standart ko\c{s}ullarda \c{c}ekilmi\c{s}tir. Ger\c{c}ek d\"{u}nya uygulamalar{\i}ndaki de\u{g}i\c{s}ken ayd{\i}nlatma, farkl{\i} a\c{c}{\i}lar, okluzyon ve arka plan karma\c{s}{\i}kl{\i}\u{g}{\i} gibi zorluklar yeterince temsil edilmemektedir.
+    \item \textbf{S{\i}n{\i}f dengesizli\u{g}i:} Baz{\i} s{\i}n{\i}flarda g\"{o}r\"{u}nt\"{u} say{\i}s{\i}n{\i}n di\u{g}erlerine g\"{o}re farkl{\i}l{\i}k g\"{o}stermesi, modellerin nadir s{\i}n{\i}flar \"{u}zerindeki performans{\i}n{\i} etkileyebilir.
+    \item \textbf{Hesaplama maliyeti:} \c{C}al{\i}\c{s}mada kullan{\i}lan b\"{u}y\"{u}k \"{o}l\c{c}ekli modellerin (ConvNeXt-Tiny, CoAtNet-0 vb.) e\u{g}itim ve \c{c}{\i}kar{\i}m maliyetleri, kaynak k{\i}s{\i}tl{\i} ortamlarda pratik kullan{\i}m{\i} s{\i}n{\i}rlayabilir.
+    \item \textbf{Tavan etkisi:} \c{C}ok say{\i}da modelin \%100 do\u{g}rulu\u{g}a ula\c{s}mas{\i}, modeller aras{\i} anlaml{\i} performans farklar{\i}n{\i}n tespit edilmesini zorla\c{s}t{\i}rmaktad{\i}r. Daha zorlu bir veri seti, modellerin g\"{u}\c{c}l\"{u} ve zay{\i}f y\"{o}nlerini daha net ortaya koyabilir.
+\end{itemize}
+
 % ========== X. SONUÇ ==========
 \section{Sonu\c{c}}
 Bu \c{c}al{\i}\c{s}mada, 23 s{\i}n{\i}fl{\i} sebze g\"{o}r\"{u}nt\"{u}s\"{u} s{\i}n{\i}fland{\i}rmas{\i} i\c{c}in klasik makine \"{o}\u{g}renmesinden topluluk y\"{o}ntemlerine kadar geni\c{s} bir yelpazede kar\c{s}{\i}la\c{s}t{\i}rmal{\i} analiz ger\c{c}ekle\c{s}tirilmi\c{s}tir. Elde edilen ana bulgular \c{s}unlard{\i}r:
