@@ -3,68 +3,69 @@
   <img src="https://img.shields.io/badge/PyTorch-2.0+-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white" alt="PyTorch">
   <img src="https://img.shields.io/badge/scikit--learn-1.3+-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white" alt="scikit-learn">
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License">
+  <a href="https://www.kaggle.com/datasets/emirsecer/vegetables"><img src="https://img.shields.io/badge/Kaggle-Dataset-20BEFF?style=for-the-badge&logo=kaggle&logoColor=white" alt="Kaggle Dataset"></a>
 </p>
 
-<h1 align="center">🥬 Sebze Görüntü Sınıflandırma<br><sub>Klasik ML'den Ensemble'a — Kapsamlı Karşılaştırmalı Analiz</sub></h1>
+<h1 align="center">🥬 Vegetable Image Classification<br><sub>From Classical ML to Ensemble — A Comprehensive Comparative Analysis</sub></h1>
 
 <p align="center">
-  <strong>Bitirme Tezi</strong> &nbsp;·&nbsp;
-  23 sınıf &nbsp;·&nbsp; 6 170 görüntü &nbsp;·&nbsp; 30+ model &nbsp;·&nbsp; %100 doğruluk
+  <strong>Undergraduate Thesis</strong> &nbsp;·&nbsp;
+  23 classes &nbsp;·&nbsp; 6,170 images &nbsp;·&nbsp; 30+ models &nbsp;·&nbsp; 100% accuracy
 </p>
 
 ---
 
-## 📖 Özet
+## 📖 Abstract
 
-Bu çalışma, **23 kategoriye ait 6 170 sebze görüntüsü** üzerinde klasik makine öğrenmesinden derin öğrenmeye, Vision Transformer'lardan ensemble yöntemlerine kadar geniş bir yelpazede **kapsamlı bir görüntü sınıflandırma araştırması** sunmaktadır.
+This study presents a **comprehensive image classification research** on **6,170 vegetable images across 23 categories**, spanning classical machine learning, deep learning, Vision Transformers, and ensemble methods.
 
-| Yaklaşım | En İyi Doğruluk | Öne Çıkan Model |
-|:---------|:---------------:|:----------------|
-| Klasik ML | %63,33 | Random Forest |
-| Özel CNN | %92,98 | Depthwise Separable CNN |
-| Transfer Learning | **%100,00** | EfficientNetV2-S · ConvNeXt-Tiny |
-| Vision Transformers | **%100,00** | ViT-Small/16 · CoAtNet-0 · EfficientFormer-L1 |
-| Self-Supervised (SimCLR) | %90,76 | ResNet-18 (etiket yok) |
-| Ensemble | **%100,00** | Hard/Soft Voting · Stacking (XGBoost) |
+| Approach | Best Accuracy | Top Model |
+|:---------|:------------:|:----------|
+| Classical ML | 63.33% | Random Forest |
+| Custom CNN | 92.98% | Depthwise Separable CNN |
+| Transfer Learning | **100.00%** | EfficientNetV2-S · ConvNeXt-Tiny |
+| Vision Transformers | **100.00%** | ViT-Small/16 · CoAtNet-0 · EfficientFormer-L1 |
+| Self-Supervised (SimCLR) | 90.76% | ResNet-18 (no labels) |
+| Ensemble | **100.00%** | Hard/Soft Voting · Stacking (XGBoost) |
 
-> **Temel bulgu:** Transfer learning ve transformer tabanlı modeller, el yapımı özelliklerle klasik ML'e kıyasla **~37 puan** daha yüksek doğruluk elde etmiştir. Ensemble stratejileri, Cohen's Kappa = 1.0 ile mükemmel uyum sağlamıştır.
+> **Key finding:** Transfer learning and transformer-based models achieved **~37 percentage points** higher accuracy compared to classical ML with handcrafted features. Ensemble strategies reached perfect agreement with Cohen's Kappa = 1.0.
 
 ---
 
-## 🗂️ Proje Yapısı
+## 🗂️ Project Structure
 
 ```
 vegetable-classification-thesis/
 │
-├── 📓 01_eda_feature_engineering/     ← Keşifsel veri analizi & 500+ özellik çıkarımı
+├── 📓 01_eda_feature_engineering/     ← Exploratory data analysis & 500+ feature extraction
 │   ├── 01_eda_feature_engineering.ipynb
-│   └── results/                       (9 görselleştirme)
+│   └── results/                       (9 visualizations)
 │
-├── 📓 02_classical_ml/                ← 10 klasik ML modeli & Optuna optimizasyonu
+├── 📓 02_classical_ml/                ← 10 classical ML models & Optuna optimization
 │   ├── 02_classical_ml.ipynb
-│   └── results/                       (4 görselleştirme + CSV)
+│   └── results/                       (4 visualizations + CSV)
 │
-├── 📓 03_cnn_transfer_learning/       ← Özel CNN + 4 transfer learning modeli
+├── 📓 03_cnn_transfer_learning/       ← Custom CNNs + 4 transfer learning models
 │   ├── 03_cnn_transfer_learning.ipynb
-│   └── results/                       (2 görselleştirme)
+│   └── results/                       (2 visualizations)
 │
 ├── 📓 04_vision_transformers/         ← ViT, Swin, DeiT, CoAtNet, EfficientFormer
 │   ├── 04_vision_transformers.ipynb
-│   └── results/                       (2 görselleştirme)
+│   └── results/                       (2 visualizations)
 │
 ├── 📓 05_advanced_techniques/         ← SimCLR, Metric Learning, Focal Loss, NAS
 │   ├── 05_advanced_techniques.ipynb
-│   └── results/                       (6 görselleştirme)
+│   └── results/                       (6 visualizations)
 │
-├── 📓 06_ensemble/                    ← 8 ensemble stratejisi & istatistiksel testler
+├── 📓 06_ensemble/                    ← 8 ensemble strategies & statistical tests
 │   ├── 06_ensemble.ipynb
-│   └── results/                       (4 görselleştirme)
+│   └── results/                       (4 visualizations)
 │
 ├── 📄 report/
-│   ├── main.tex                       ← LaTeX tez raporu
-│   ├── main.pdf                       ← Derlenmiş PDF
-│   ├── main.docx                      ← Word versiyonu
-│   └── references.bib                 ← 30 akademik kaynak
+│   ├── main.tex                       ← LaTeX thesis report
+│   ├── main.pdf                       ← Compiled PDF
+│   ├── main.docx                      ← Word version
+│   └── references.bib                 ← 30 academic references
 │
 ├── 📋 requirements.txt
 └── 📘 README.md
@@ -72,358 +73,358 @@ vegetable-classification-thesis/
 
 ---
 
-## 📊 Veri Seti
+## 📊 Dataset
 
-| Özellik | Değer |
-|:--------|:------|
-| **Kaynak** | Kaggle — Vegetables |
-| **Toplam görüntü** | 6 170 |
-| **Sınıf sayısı** | 23 |
-| **Giriş boyutu** | 224 × 224 px |
-| **Eğitim / Doğrulama / Test** | %70 / %15 / %15 (tabakalı) |
-| **Problem türü** | Çok sınıflı görüntü sınıflandırma |
+| Property | Value |
+|:---------|:------|
+| **Source** | [Kaggle — Vegetables](https://www.kaggle.com/datasets/emirsecer/vegetables) |
+| **Total images** | 6,170 |
+| **Number of classes** | 23 |
+| **Input size** | 224 × 224 px |
+| **Train / Validation / Test** | 70% / 15% / 15% (stratified) |
+| **Problem type** | Multi-class image classification |
 
-**Sınıflar:** Bean · Bitter Gourd · Bottle Gourd · Brinjal · Broccoli · Cabbage · Capsicum · Carrot · Cauliflower · Cucumber · Papaya · Potato · Pumpkin · Radish · Tomato ve diğerleri.
+**Classes:** Bean · Bitter Gourd · Bottle Gourd · Brinjal · Broccoli · Cabbage · Capsicum · Carrot · Cauliflower · Cucumber · Papaya · Potato · Pumpkin · Radish · Tomato and others.
 
 ---
 
-## 📓 Notebook Detayları
+## 📓 Notebook Details
 
-### 1 · Keşifsel Veri Analizi ve Özellik Çıkarımı
+### 1 · Exploratory Data Analysis & Feature Engineering
 
 > `01_eda_feature_engineering/01_eda_feature_engineering.ipynb`
 
-**500+ el yapımı özellik** çıkarılarak veri setinin derinlemesine analizi yapılmıştır.
+In-depth analysis of the dataset with **500+ handcrafted features** extracted.
 
-| Özellik Grubu | Teknik | Boyut |
-|:-------------|:-------|------:|
-| Renk histogramı | HSV + LAB (32 bin × 3 kanal × 2) | 192 |
-| Doku | LBP (uniform) + GLCM (5 özellik × 4 açı) | 30 |
-| Şekil | HOG (9 yönelim, 8×8 hücre) + Hu Moments | 191 |
-| Kenar | Canny yoğunluk + Sobel (ort. & std) | 3 |
-| İstatistik | RGB (mean, std, skew, kurt) + HSV (mean, std) | 18 |
-| Frekans | FFT enerji, entropi, düşük/yüksek frekans oranı | 4 |
+| Feature Group | Technique | Dimensions |
+|:-------------|:----------|----------:|
+| Color histogram | HSV + LAB (32 bins × 3 channels × 2) | 192 |
+| Texture | LBP (uniform) + GLCM (5 properties × 4 angles) | 30 |
+| Shape | HOG (9 orientations, 8×8 cells) + Hu Moments | 191 |
+| Edge | Canny density + Sobel (mean & std) | 3 |
+| Statistical | RGB (mean, std, skew, kurtosis) + HSV (mean, std) | 18 |
+| Frequency | FFT energy, entropy, low/high frequency ratio | 4 |
 
-**Görselleştirmeler:** Sınıf dağılımı · RGB histogramları · Kalite metrikleri · t-SNE · UMAP · PCA · Sınıflar arası benzerlik matrisi
+**Visualizations:** Class distribution · RGB histograms · Quality metrics · t-SNE · UMAP · PCA · Inter-class similarity matrix
 
 <details>
-<summary>📸 Örnek görselleştirmeler</summary>
+<summary>📸 Sample visualizations</summary>
 
 | | |
 |:---:|:---:|
-| ![Sınıf Dağılımı](01_eda_feature_engineering/results/class_distribution.png) | ![RGB Histogramları](01_eda_feature_engineering/results/rgb_histograms.png) |
+| ![Class Distribution](01_eda_feature_engineering/results/class_distribution.png) | ![RGB Histograms](01_eda_feature_engineering/results/rgb_histograms.png) |
 | ![t-SNE](01_eda_feature_engineering/results/tsne_visualization.png) | ![UMAP](01_eda_feature_engineering/results/umap_visualization.png) |
 
 </details>
 
 ---
 
-### 2 · Klasik Makine Öğrenmesi
+### 2 · Classical Machine Learning
 
 > `02_classical_ml/02_classical_ml.ipynb`
 
-El yapımı özelliklerle **10 farklı ML modeli** eğitilmiş, Optuna ile hiperparametre optimizasyonu yapılmıştır.
+**10 different ML models** trained on handcrafted features with Optuna hyperparameter optimization.
 
-| Model | Doğruluk | Macro F1 | CV Ort. | Parametre |
-|:------|:--------:|:--------:|:-------:|:----------|
-| **Random Forest** | **0,6333** | **0,4519** | 0,4071 | 200 ağaç |
-| SVM-Linear | 0,5000 | 0,3102 | 0,3286 | C=1,0 |
-| LightGBM | 0,4667 | 0,2961 | 0,2214 | 200 estimator |
-| Gaussian NB | 0,4333 | 0,2602 | 0,1571 | — |
-| Logistic Regression | 0,4333 | 0,2809 | 0,3500 | OVR |
-| SVM-RBF | 0,4000 | 0,2308 | 0,1786 | C=0,1 |
-| XGBoost | 0,3667 | 0,1981 | 0,3000 | Optuna |
-| KNN (k=5) | 0,3333 | 0,1684 | 0,2500 | — |
-| CatBoost | 0,3333 | 0,1555 | 0,2786 | 200 iterasyon |
-| SVM-Polynomial | 0,1667 | 0,0159 | 0,1429 | derece=3 |
+| Model | Accuracy | Macro F1 | CV Mean | Config |
+|:------|:--------:|:--------:|:-------:|:-------|
+| **Random Forest** | **0.6333** | **0.4519** | 0.4071 | 200 trees |
+| SVM-Linear | 0.5000 | 0.3102 | 0.3286 | C=1.0 |
+| LightGBM | 0.4667 | 0.2961 | 0.2214 | 200 estimators |
+| Gaussian NB | 0.4333 | 0.2602 | 0.1571 | — |
+| Logistic Regression | 0.4333 | 0.2809 | 0.3500 | OVR |
+| SVM-RBF | 0.4000 | 0.2308 | 0.1786 | C=0.1 |
+| XGBoost | 0.3667 | 0.1981 | 0.3000 | Optuna |
+| KNN (k=5) | 0.3333 | 0.1684 | 0.2500 | — |
+| CatBoost | 0.3333 | 0.1555 | 0.2786 | 200 iterations |
+| SVM-Polynomial | 0.1667 | 0.0159 | 0.1429 | degree=3 |
 
-**Ek teknikler:** PCA boyut indirgeme (%95 varyans → 40 bileşen) · LDA · Stratified 5-Fold CV · GridSearchCV
+**Additional techniques:** PCA dimensionality reduction (95% variance → 40 components) · LDA · Stratified 5-Fold CV · GridSearchCV
 
 <details>
-<summary>📸 Sonuç görselleri</summary>
+<summary>📸 Result visualizations</summary>
 
 | | |
 |:---:|:---:|
-| ![Model Karşılaştırma](02_classical_ml/results/model_comparison_chart.png) | ![Confusion Matrix](02_classical_ml/results/confusion_matrix_Random_Forest.png) |
-| ![PCA Analizi](02_classical_ml/results/pca_analysis.png) | ![Özellik Önemi](02_classical_ml/results/rf_feature_importance.png) |
+| ![Model Comparison](02_classical_ml/results/model_comparison_chart.png) | ![Confusion Matrix](02_classical_ml/results/confusion_matrix_Random_Forest.png) |
+| ![PCA Analysis](02_classical_ml/results/pca_analysis.png) | ![Feature Importance](02_classical_ml/results/rf_feature_importance.png) |
 
 </details>
 
 ---
 
-### 3 · CNN ve Transfer Learning
+### 3 · CNN & Transfer Learning
 
 > `03_cnn_transfer_learning/03_cnn_transfer_learning.ipynb`
 
-#### Özel CNN Mimarileri
+#### Custom CNN Architectures
 
-| Model | Test Doğruluk | Macro F1 | Parametre |
+| Model | Test Accuracy | Macro F1 | Parameters |
 |:------|:------------:|:--------:|:---------:|
-| SimpleCNN | 0,8855 | 0,8548 | 2,5M |
-| ResidualCNN | 0,8801 | 0,8376 | 2,1M |
-| Depthwise Separable CNN | 0,9298 | 0,9173 | **0,2M** |
+| SimpleCNN | 0.8855 | 0.8548 | 2.5M |
+| ResidualCNN | 0.8801 | 0.8376 | 2.1M |
+| Depthwise Separable CNN | 0.9298 | 0.9173 | **0.2M** |
 
 #### Transfer Learning
 
-| Model | Test Doğruluk | Macro F1 | Parametre | Strateji |
+| Model | Test Accuracy | Macro F1 | Parameters | Strategy |
 |:------|:------------:|:--------:|:---------:|:---------|
-| **EfficientNetV2-S** | **1,0000** | **1,0000** | 20,2M | 2 fazlı ince ayar |
-| **ConvNeXt-Tiny** | **1,0000** | **1,0000** | 27,8M | Kademeli çözme |
-| MobileNetV3-Large | 0,9989 | 0,9990 | 4,2M | Hafif & hızlı |
-| DenseNet-121 | 0,9989 | 0,9990 | 7,0M | Feature reuse |
+| **EfficientNetV2-S** | **1.0000** | **1.0000** | 20.2M | 2-phase fine-tuning |
+| **ConvNeXt-Tiny** | **1.0000** | **1.0000** | 27.8M | Gradual unfreezing |
+| MobileNetV3-Large | 0.9989 | 0.9990 | 4.2M | Lightweight & fast |
+| DenseNet-121 | 0.9989 | 0.9990 | 7.0M | Feature reuse |
 
-**Eğitim detayları:**
+**Training details:**
 
-- **Faz 1** (5 epoch): Backbone dondurulmuş — yalnızca sınıflandırıcı baş eğitilmiş (LR: 1e-3)
-- **Faz 2** (15 epoch): Kademeli çözme — diskriminatif öğrenme oranları (LR: 1e-4 → 1e-5)
-- **Augmentation:** Albumentations (MixUp, CutMix, RandAugment, CoarseDropout, GridDistortion vb.)
-- **Optimizer:** AdamW (weight decay: 0,01) + CosineAnnealingWarmRestarts
-- **Label Smoothing:** α = 0,1 · **Mixed Precision (AMP)** · Early Stopping (patience=7)
+- **Phase 1** (5 epochs): Backbone frozen — only classifier head trained (LR: 1e-3)
+- **Phase 2** (15 epochs): Gradual unfreezing — discriminative learning rates (LR: 1e-4 → 1e-5)
+- **Augmentation:** Albumentations (MixUp, CutMix, RandAugment, CoarseDropout, GridDistortion, etc.)
+- **Optimizer:** AdamW (weight decay: 0.01) + CosineAnnealingWarmRestarts
+- **Label Smoothing:** α = 0.1 · **Mixed Precision (AMP)** · Early Stopping (patience=7)
 
 <details>
-<summary>📸 Eğitim grafikleri</summary>
+<summary>📸 Training charts</summary>
 
 | | |
 |:---:|:---:|
-| ![Eğitim Geçmişi](03_cnn_transfer_learning/results/training_history_all.png) | ![CNN Karşılaştırma](03_cnn_transfer_learning/results/cnn_comparison_chart.png) |
+| ![Training History](03_cnn_transfer_learning/results/training_history_all.png) | ![CNN Comparison](03_cnn_transfer_learning/results/cnn_comparison_chart.png) |
 
 </details>
 
 ---
 
-### 4 · Vision Transformers ve Hibrit Modeller
+### 4 · Vision Transformers & Hybrid Models
 
 > `04_vision_transformers/04_vision_transformers.ipynb`
 
-#### Pure Transformer
+#### Pure Transformers
 
-| Model | Patch | Test Doğruluk | Parametre |
+| Model | Patch | Test Accuracy | Parameters |
 |:------|:-----:|:------------:|:---------:|
-| **ViT-Small/16** | 16×16 | **1,0000** | 21,7M |
-| DeiT-Small | 16×16 | ~0,95–0,99 | — |
-| Swin-Tiny | 4×4 pencere | 0,9946 | 27,5M |
+| **ViT-Small/16** | 16×16 | **1.0000** | 21.7M |
+| DeiT-Small | 16×16 | ~0.95–0.99 | — |
+| Swin-Tiny | 4×4 window | 0.9946 | 27.5M |
 
-#### Hibrit Modeller
+#### Hybrid Models
 
-| Model | Tür | Test Doğruluk | Parametre |
-|:------|:----|:------------:|:---------:|
-| **CoAtNet-0** | CNN + Attention | **1,0000** | 26,7M |
-| **EfficientFormer-L1** | Hibrit | **1,0000** | **11,4M** |
-| MaxViT-Tiny | Multi-axis attention | ~0,99–1,00 | — |
+| Model | Type | Test Accuracy | Parameters |
+|:------|:-----|:------------:|:---------:|
+| **CoAtNet-0** | CNN + Attention | **1.0000** | 26.7M |
+| **EfficientFormer-L1** | Hybrid | **1.0000** | **11.4M** |
+| MaxViT-Tiny | Multi-axis attention | ~0.99–1.00 | — |
 
-> 💡 **EfficientFormer-L1**, yalnızca 11,4M parametre ile %100 doğruluk elde eden **en verimli model** olmuştur.
+> 💡 **EfficientFormer-L1** was the **most efficient model**, achieving 100% accuracy with only 11.4M parameters.
 
-**İleri analiz:** Attention map görselleştirme · SHAP DeepExplainer · Knowledge Distillation (öğretmen → 388 KB öğrenci model)
+**Advanced analysis:** Attention map visualization · SHAP DeepExplainer · Knowledge Distillation (teacher → 388 KB student model)
 
 <details>
-<summary>📸 Attention haritaları</summary>
+<summary>📸 Attention maps</summary>
 
 | | |
 |:---:|:---:|
-| ![ViT Karşılaştırma](04_vision_transformers/results/vit_comparison_chart.png) | ![Attention Haritaları](04_vision_transformers/results/vit_attention_samples.png) |
+| ![ViT Comparison](04_vision_transformers/results/vit_comparison_chart.png) | ![Attention Maps](04_vision_transformers/results/vit_attention_samples.png) |
 
 </details>
 
 ---
 
-### 5 · İleri Düzey Teknikler
+### 5 · Advanced Techniques
 
 > `05_advanced_techniques/05_advanced_techniques.ipynb`
 
-| Teknik | Kategori | Test Doğruluk | Açıklama |
-|:-------|:---------|:------------:|:---------|
-| Cross-Entropy (Baseline) | Gözetimli | 0,9258 | Standart eğitim |
-| **SimCLR** | Self-Supervised | **0,9076** | Etiketsiz — NT-Xent kaybı |
-| Triplet Loss | Metrik öğrenme | ~0,90–0,92 | Gömme uzayı (margin=0,5) |
-| ArcFace | Metrik öğrenme | ~0,90–0,92 | Açısal marjin (s=30, m=0,5) |
-| Focal Loss | Kayıp mühendisliği | 0,8785 | γ=2,0 ile zor örneklere odaklanma |
-| NAS (Optuna) | Mimari arama | 0,8704 | En iyi: 4 katman, 64 filtre |
-| FPN Multi-Scale | Özellik füzyonu | 0,6910 | Çok ölçekli piramit |
+| Technique | Category | Test Accuracy | Description |
+|:----------|:---------|:------------:|:------------|
+| Cross-Entropy (Baseline) | Supervised | 0.9258 | Standard training |
+| **SimCLR** | Self-Supervised | **0.9076** | No labels — NT-Xent loss |
+| Triplet Loss | Metric Learning | ~0.90–0.92 | Embedding space (margin=0.5) |
+| ArcFace | Metric Learning | ~0.90–0.92 | Angular margin (s=30, m=0.5) |
+| Focal Loss | Loss Engineering | 0.8785 | Hard example focus with γ=2.0 |
+| NAS (Optuna) | Architecture Search | 0.8704 | Best: 4 layers, 64 filters |
+| FPN Multi-Scale | Feature Fusion | 0.6910 | Multi-scale pyramid |
 
-**SimCLR detayları:** ResNet-18 omurga · Projeksiyon başı (512 → 128) · τ = 0,5 · Çift görünüm augmentation · **Etiket olmadan %90,76 doğruluk**
+**SimCLR details:** ResNet-18 backbone · Projection head (512 → 128) · τ = 0.5 · Dual-view augmentation · **90.76% accuracy without any labels**
 
 <details>
-<summary>📸 İleri teknik sonuçları</summary>
+<summary>📸 Advanced technique results</summary>
 
 | | |
 |:---:|:---:|
-| ![SimCLR t-SNE](05_advanced_techniques/results/simclr_tsne.png) | ![Metrik Öğrenme](05_advanced_techniques/results/metric_learning_losses.png) |
-| ![Focal vs CE](05_advanced_techniques/results/focal_vs_ce_loss.png) | ![İleri Yöntemler](05_advanced_techniques/results/advanced_methods_chart.png) |
+| ![SimCLR t-SNE](05_advanced_techniques/results/simclr_tsne.png) | ![Metric Learning](05_advanced_techniques/results/metric_learning_losses.png) |
+| ![Focal vs CE](05_advanced_techniques/results/focal_vs_ce_loss.png) | ![Advanced Methods](05_advanced_techniques/results/advanced_methods_chart.png) |
 
 </details>
 
 ---
 
-### 6 · Ensemble Model ve Final Analizi
+### 6 · Ensemble Model & Final Analysis
 
 > `06_ensemble/06_ensemble.ipynb`
 
-| Strateji | Yöntem | Test Doğruluk | Cohen's κ | Macro F1 |
+| Strategy | Method | Test Accuracy | Cohen's κ | Macro F1 |
 |:---------|:-------|:------------:|:---------:|:--------:|
-| **Hard Voting** | Çoğunluk oyu | **1,0000** | **1,0000** | **1,0000** |
-| **Soft Voting** | Olasılık ortalaması | **1,0000** | **1,0000** | **1,0000** |
-| **Weighted Soft** | Doğruluk² ağırlık | **1,0000** | **1,0000** | **1,0000** |
-| **Stacking (XGBoost)** | Meta-öğrenici | **1,0000** | **1,0000** | **1,0000** |
-| Stacking (LightGBM) | Meta-öğrenici | 0,9968 | 0,9965 | 0,9969 |
-| Stacking (MLP) | Sinir ağı meta | 0,9968 | 0,9965 | ~0,997 |
-| Rank Averaging | Sıralama tabanlı | 0,9968 | 0,9965 | 0,9969 |
-| **Greedy Selection** | Yinelemeli seçim | **1,0000** | **1,0000** | **1,0000** |
+| **Hard Voting** | Majority vote | **1.0000** | **1.0000** | **1.0000** |
+| **Soft Voting** | Probability averaging | **1.0000** | **1.0000** | **1.0000** |
+| **Weighted Soft** | Accuracy² weighting | **1.0000** | **1.0000** | **1.0000** |
+| **Stacking (XGBoost)** | Meta-learner | **1.0000** | **1.0000** | **1.0000** |
+| Stacking (LightGBM) | Meta-learner | 0.9968 | 0.9965 | 0.9969 |
+| Stacking (MLP) | Neural meta-learner | 0.9968 | 0.9965 | ~0.997 |
+| Rank Averaging | Rank-based | 0.9968 | 0.9965 | 0.9969 |
+| **Greedy Selection** | Iterative selection | **1.0000** | **1.0000** | **1.0000** |
 
-**İstatistiksel testler:** McNemar testi (ikili karşılaştırma) · Friedman testi (çoklu karşılaştırma)  
-**Dağıtım:** ONNX export · INT8 Quantization
+**Statistical tests:** McNemar test (pairwise comparison) · Friedman test (multi-classifier comparison)  
+**Deployment:** ONNX export · INT8 Quantization
 
 <details>
-<summary>📸 Ensemble sonuçları</summary>
+<summary>📸 Ensemble results</summary>
 
 | | |
 |:---:|:---:|
 | ![Confusion Matrix](06_ensemble/results/confusion_matrix_comparison-2.png) | ![Per-class F1](06_ensemble/results/per_class_f1-2.png) |
-| ![ROC-AUC](06_ensemble/results/roc_auc_curves-2.png) | ![Hata Korelasyonu](06_ensemble/results/error_correlation_matrix-2.png) |
+| ![ROC-AUC](06_ensemble/results/roc_auc_curves-2.png) | ![Error Correlation](06_ensemble/results/error_correlation_matrix-2.png) |
 
 </details>
 
 ---
 
-## 📈 Performans Karşılaştırması
+## 📈 Performance Comparison
 
 ```
-                             Doğruluk (%)
-  Klasik ML (RF)         ████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░  63,33
-  Özel CNN (DW-Sep)      █████████████████████████████░░░░░░░░░░░░░░  92,98
-  SimCLR (etiketsiz)     ████████████████████████████░░░░░░░░░░░░░░░  90,76
-  Transfer Learning      ████████████████████████████████████████████ 100,00
-  Vision Transformers    ████████████████████████████████████████████ 100,00
-  Ensemble               ████████████████████████████████████████████ 100,00
+                             Accuracy (%)
+  Classical ML (RF)      ████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░  63.33
+  Custom CNN (DW-Sep)    █████████████████████████████░░░░░░░░░░░░░░  92.98
+  SimCLR (no labels)     ████████████████████████████░░░░░░░░░░░░░░░  90.76
+  Transfer Learning      ████████████████████████████████████████████ 100.00
+  Vision Transformers    ████████████████████████████████████████████ 100.00
+  Ensemble               ████████████████████████████████████████████ 100.00
 ```
 
-### Tüm Modellerin Özet Tablosu
+### Complete Model Leaderboard
 
-| # | Model | Tür | Doğruluk | F1 | Parametre |
-|:-:|:------|:----|:--------:|:--:|:---------:|
-| 1 | SVM-Polynomial | Klasik | 0,1667 | 0,016 | — |
-| 2 | KNN (k=5) | Klasik | 0,3333 | 0,168 | — |
-| 3 | CatBoost | Klasik | 0,3333 | 0,156 | — |
-| 4 | XGBoost | Klasik | 0,3667 | 0,198 | — |
-| 5 | SVM-RBF | Klasik | 0,4000 | 0,231 | — |
-| 6 | Logistic Regression | Klasik | 0,4333 | 0,281 | — |
-| 7 | Gaussian NB | Klasik | 0,4333 | 0,260 | — |
-| 8 | LightGBM | Klasik | 0,4667 | 0,296 | — |
-| 9 | SVM-Linear | Klasik | 0,5000 | 0,310 | — |
-| 10 | **Random Forest** | Klasik | **0,6333** | **0,452** | 200 ağaç |
-| 11 | FPN Multi-Scale | İleri | 0,6910 | — | — |
-| 12 | NAS (Optuna) | İleri | 0,8704 | — | 4 katman |
-| 13 | Focal Loss | İleri | 0,8785 | — | γ=2,0 |
-| 14 | ResidualCNN | CNN | 0,8801 | 0,838 | 2,1M |
-| 15 | SimpleCNN | CNN | 0,8855 | 0,855 | 2,5M |
-| 16 | SimCLR | Self-Sup | 0,9076 | — | ResNet-18 |
-| 17 | Cross-Entropy Baseline | İleri | 0,9258 | — | — |
-| 18 | DepthwiseSep CNN | CNN | 0,9298 | 0,917 | **0,2M** |
-| 19 | Swin-Tiny | ViT | 0,9946 | ~0,994 | 27,5M |
-| 20 | MobileNetV3-Large | Transfer | 0,9989 | 0,999 | 4,2M |
-| 21 | DenseNet-121 | Transfer | 0,9989 | 0,999 | 7,0M |
-| 22 | EfficientNetV2-S | Transfer | **1,0000** | **1,000** | 20,2M |
-| 23 | ConvNeXt-Tiny | Transfer | **1,0000** | **1,000** | 27,8M |
-| 24 | ViT-Small/16 | ViT | **1,0000** | **1,000** | 21,7M |
-| 25 | CoAtNet-0 | Hibrit | **1,0000** | **1,000** | 26,7M |
-| 26 | EfficientFormer-L1 | Hibrit | **1,0000** | **1,000** | 11,4M |
-| 27 | Ensemble (Voting) | Ensemble | **1,0000** | **1,000** | — |
-| 28 | Ensemble (Stacking) | Ensemble | **1,0000** | **1,000** | — |
-
----
-
-## 🔬 Temel Bulgular ve Katkılar
-
-1. **Klasik vs. Derin Öğrenme Farkı (~37 puan):** El yapımı özelliklerle klasik ML en fazla %63,33 doğruluk elde ederken, transfer learning ile %100'e ulaşılmıştır.
-
-2. **Transfer Learning'in Gücü:** ImageNet ön eğitimli modeller, özel CNN'lere göre **~7–12 puan** daha yüksek performans göstermiştir.
-
-3. **Transformer'lar CNN'lerle Eşdeğer:** ViT ve hibrit modeller, CNN tabanlı transfer learning ile aynı %100 doğruluğa ulaşmıştır.
-
-4. **Self-Supervised Learning Potansiyeli:** SimCLR, hiçbir etiket kullanmadan %90,76 doğruluk elde ederek etiketleme maliyetini azaltma potansiyelini göstermiştir.
-
-5. **Verimlilik-Performans Dengesi:** EfficientFormer-L1 (11,4M parametre) ve MobileNetV3 (4,2M parametre), gömülü sistem dağıtımı için ideal adaylardır.
-
-6. **Ensemble Güvenilirliği:** Birden fazla ensemble stratejisi Cohen's κ = 1,0 ile mükemmel sınıflandırma sağlamıştır.
+| # | Model | Type | Accuracy | F1 | Parameters |
+|:-:|:------|:-----|:--------:|:--:|:---------:|
+| 1 | SVM-Polynomial | Classical | 0.1667 | 0.016 | — |
+| 2 | KNN (k=5) | Classical | 0.3333 | 0.168 | — |
+| 3 | CatBoost | Classical | 0.3333 | 0.156 | — |
+| 4 | XGBoost | Classical | 0.3667 | 0.198 | — |
+| 5 | SVM-RBF | Classical | 0.4000 | 0.231 | — |
+| 6 | Logistic Regression | Classical | 0.4333 | 0.281 | — |
+| 7 | Gaussian NB | Classical | 0.4333 | 0.260 | — |
+| 8 | LightGBM | Classical | 0.4667 | 0.296 | — |
+| 9 | SVM-Linear | Classical | 0.5000 | 0.310 | — |
+| 10 | **Random Forest** | Classical | **0.6333** | **0.452** | 200 trees |
+| 11 | FPN Multi-Scale | Advanced | 0.6910 | — | — |
+| 12 | NAS (Optuna) | Advanced | 0.8704 | — | 4 layers |
+| 13 | Focal Loss | Advanced | 0.8785 | — | γ=2.0 |
+| 14 | ResidualCNN | CNN | 0.8801 | 0.838 | 2.1M |
+| 15 | SimpleCNN | CNN | 0.8855 | 0.855 | 2.5M |
+| 16 | SimCLR | Self-Sup | 0.9076 | — | ResNet-18 |
+| 17 | Cross-Entropy Baseline | Advanced | 0.9258 | — | — |
+| 18 | DepthwiseSep CNN | CNN | 0.9298 | 0.917 | **0.2M** |
+| 19 | Swin-Tiny | ViT | 0.9946 | ~0.994 | 27.5M |
+| 20 | MobileNetV3-Large | Transfer | 0.9989 | 0.999 | 4.2M |
+| 21 | DenseNet-121 | Transfer | 0.9989 | 0.999 | 7.0M |
+| 22 | EfficientNetV2-S | Transfer | **1.0000** | **1.000** | 20.2M |
+| 23 | ConvNeXt-Tiny | Transfer | **1.0000** | **1.000** | 27.8M |
+| 24 | ViT-Small/16 | ViT | **1.0000** | **1.000** | 21.7M |
+| 25 | CoAtNet-0 | Hybrid | **1.0000** | **1.000** | 26.7M |
+| 26 | EfficientFormer-L1 | Hybrid | **1.0000** | **1.000** | 11.4M |
+| 27 | Ensemble (Voting) | Ensemble | **1.0000** | **1.000** | — |
+| 28 | Ensemble (Stacking) | Ensemble | **1.0000** | **1.000** | — |
 
 ---
 
-## 🧰 Teknoloji Yığını
+## 🔬 Key Findings & Contributions
 
-| Kategori | Araçlar |
-|:---------|:--------|
-| **Derin Öğrenme** | PyTorch · torchvision · timm |
-| **Klasik ML** | scikit-learn · XGBoost · LightGBM · CatBoost |
-| **Görüntü İşleme** | OpenCV · Albumentations · scikit-image |
-| **Görselleştirme** | Matplotlib · Seaborn · Plotly |
-| **Açıklanabilirlik** | Grad-CAM · SHAP · LIME · Captum |
-| **Optimizasyon** | Optuna |
-| **Boyut İndirgeme** | t-SNE · UMAP · PCA · LDA |
-| **Dağıtım** | ONNX · ONNX Runtime |
-| **Deneysel İzleme** | Weights & Biases (wandb) |
+1. **Classical vs. Deep Learning Gap (~37 points):** Classical ML with handcrafted features peaked at 63.33% accuracy, while transfer learning reached 100%.
+
+2. **Power of Transfer Learning:** ImageNet pre-trained models outperformed custom CNNs by **~7–12 percentage points**.
+
+3. **Transformers Match CNNs:** ViT and hybrid models achieved the same 100% accuracy as CNN-based transfer learning.
+
+4. **Self-Supervised Learning Potential:** SimCLR achieved 90.76% accuracy without using any labels, demonstrating its potential to reduce annotation costs.
+
+5. **Efficiency–Performance Trade-off:** EfficientFormer-L1 (11.4M params) and MobileNetV3 (4.2M params) are ideal candidates for embedded deployment.
+
+6. **Ensemble Reliability:** Multiple ensemble strategies achieved perfect classification with Cohen's κ = 1.0.
 
 ---
 
-## ⚙️ Kurulum
+## 🧰 Tech Stack
 
-### Gereksinimler
+| Category | Tools |
+|:---------|:------|
+| **Deep Learning** | PyTorch · torchvision · timm |
+| **Classical ML** | scikit-learn · XGBoost · LightGBM · CatBoost |
+| **Image Processing** | OpenCV · Albumentations · scikit-image |
+| **Visualization** | Matplotlib · Seaborn · Plotly |
+| **Explainability** | Grad-CAM · SHAP · LIME · Captum |
+| **Optimization** | Optuna |
+| **Dimensionality Reduction** | t-SNE · UMAP · PCA · LDA |
+| **Deployment** | ONNX · ONNX Runtime |
+| **Experiment Tracking** | Weights & Biases (wandb) |
+
+---
+
+## ⚙️ Installation
+
+### Requirements
 
 - Python ≥ 3.10
-- CUDA destekli GPU (önerilen; CPU'da da çalışır)
+- CUDA-capable GPU (recommended; also runs on CPU)
 
-### Adımlar
+### Steps
 
 ```bash
-# 1. Depoyu klonlayın
+# 1. Clone the repository
 git clone https://github.com/emirsecer1/vegetable-classification-thesis.git
 cd vegetable-classification-thesis
 
-# 2. Sanal ortam oluşturun (önerilen)
+# 2. Create a virtual environment (recommended)
 python -m venv venv
 source venv/bin/activate        # Linux/macOS
 # venv\Scripts\activate         # Windows
 
-# 3. Bağımlılıkları yükleyin
+# 3. Install dependencies
 pip install -r requirements.txt
 ```
 
 ---
 
-## 🚀 Kullanım
+## 🚀 Usage
 
-### Kaggle Ortamı
+### Kaggle Environment
 
-1. Kaggle'da [Vegetables](https://www.kaggle.com/datasets) veri setini notebook'unuza ekleyin.
-2. `DATA_DIR` değişkeni Kaggle ortamı için otomatik yapılandırılmıştır:
+1. Add the [Vegetables dataset](https://www.kaggle.com/datasets/emirsecer/vegetables) to your Kaggle notebook.
+2. The `DATA_DIR` variable is automatically configured for the Kaggle environment:
    ```python
    DATA_DIR = "../input/vegetables/SEBZE/"
    ```
-3. Notebook'ları sırasıyla çalıştırın: `01` → `02` → `03` → `04` → `05` → `06`
+3. Run the notebooks in order: `01` → `02` → `03` → `04` → `05` → `06`
 
-### Yerel Ortam
+### Local Environment
 
-1. Veri setini Kaggle'dan indirin ve bir klasöre çıkarın.
-2. Her notebook'un başındaki `DATA_DIR` değişkenini güncelleyin:
+1. Download the dataset from [Kaggle](https://www.kaggle.com/datasets/emirsecer/vegetables) and extract it.
+2. Update the `DATA_DIR` variable at the beginning of each notebook:
    ```python
    DATA_DIR = "/path/to/your/SEBZE/"
    ```
-3. Veri bulunamazsa notebook'lar **demo modunda** (sentetik veri ile) çalışır.
+3. If the data is not found, notebooks run in **demo mode** (with synthetic data).
 
-### Tez Raporu
+### Thesis Report
 
-Derlenmiş tez raporu `report/` klasöründe mevcuttur:
+The compiled thesis report is available in the `report/` directory:
 
-| Format | Dosya |
-|:-------|:------|
+| Format | File |
+|:-------|:-----|
 | PDF | [`report/main.pdf`](report/main.pdf) |
 | Word | [`report/main.docx`](report/main.docx) |
-| LaTeX kaynak | [`report/main.tex`](report/main.tex) |
+| LaTeX source | [`report/main.tex`](report/main.tex) |
 
 ---
 
-## 📚 Referanslar
+## 📚 References
 
 <details>
-<summary>Tüm akademik kaynakları görüntüle (30 kaynak)</summary>
+<summary>View all academic references (30 sources)</summary>
 
 1. He, K. et al. "Deep Residual Learning for Image Recognition." *CVPR*, 2016.
 2. Dosovitskiy, A. et al. "An Image is Worth 16×16 Words: Transformers for Image Recognition at Scale." *ICLR*, 2021.
@@ -460,12 +461,12 @@ Derlenmiş tez raporu `report/` klasöründe mevcuttur:
 
 ---
 
-## 📄 Lisans
+## 📄 License
 
-Bu proje [MIT Lisansı](LICENSE) ile lisanslanmıştır.
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 
 <p align="center">
-  <sub>Emir Seçer — Bitirme Tezi, 2025</sub>
+  <sub>Emir Seçer — Undergraduate Thesis, 2025</sub>
 </p>
