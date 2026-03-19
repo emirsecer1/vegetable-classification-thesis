@@ -228,15 +228,38 @@ class StudentCNN(nn.Module):
 MODEL_REGISTRY: dict[str, dict] = {}
 
 
+def _is_lfs_pointer(filepath: str) -> bool:
+    """Dosyanın Git LFS pointer olup olmadığını kontrol eder.
+
+    Returns True if the file is a Git LFS pointer, False otherwise.
+    """
+    try:
+        with open(filepath, "rb") as f:
+            header = f.read(256)
+        return header.startswith(b"version https://git-lfs")
+    except OSError:
+        return False
+
+
 def _register(display_name: str, pth_relative: str, build_fn):
-    """Bir modeli kayıt defterine ekler (dosya varsa)."""
+    """Bir modeli kayıt defterine ekler.
+
+    Dosya mevcut değilse veya Git LFS pointer ise sessizce atlanır.
+    """
     pth_path = os.path.join(BASE_DIR, pth_relative)
-    if os.path.isfile(pth_path):
-        MODEL_REGISTRY[display_name] = {
-            "path": pth_path,
-            "build_fn": build_fn,
-            "size_mb": os.path.getsize(pth_path) / (1024 * 1024),
-        }
+    if not os.path.isfile(pth_path):
+        return
+    if _is_lfs_pointer(pth_path):
+        print(
+            f"⚠️  {display_name}: '{pth_relative}' Git LFS pointer dosyası. "
+            f"Gerçek model dosyasını indirmek için: git lfs pull"
+        )
+        return
+    MODEL_REGISTRY[display_name] = {
+        "path": pth_path,
+        "build_fn": build_fn,
+        "size_mb": os.path.getsize(pth_path) / (1024 * 1024),
+    }
 
 
 # --- Özel CNN modelleri (Notebook 03) ---
@@ -307,10 +330,18 @@ def load_model(name: str) -> nn.Module:
         return _loaded_models[name]
 
     info = MODEL_REGISTRY[name]
-    model = info["build_fn"]()
-    state_dict = torch.load(info["path"], map_location=DEVICE, weights_only=True)
-    model.load_state_dict(state_dict)
-    model.to(DEVICE).eval()
+    try:
+        model = info["build_fn"]()
+        state_dict = torch.load(info["path"], map_location=DEVICE, weights_only=True)
+        model.load_state_dict(state_dict)
+        model.to(DEVICE).eval()
+    except Exception as exc:
+        raise RuntimeError(
+            f"'{name}' modeli yüklenemedi: {exc}\n"
+            f"Dosya: {info['path']}\n"
+            f"Model dosyası bozuk veya Git LFS ile indirilmemiş olabilir.\n"
+            f"Çözüm: git lfs install && git lfs pull"
+        ) from exc
 
     info["params"] = _count_parameters(model)
     _loaded_models[name] = model
@@ -341,7 +372,11 @@ def predict_single(model_name: str, image: np.ndarray):
     if image is None:
         return "⚠️ Lütfen bir görüntü yükleyin.", None
 
-    model = load_model(model_name)
+    try:
+        model = load_model(model_name)
+    except RuntimeError as exc:
+        return {}, f"❌ **Model yüklenemedi:**\n\n{exc}"
+
     tensor = preprocess_image(image)
 
     start = time.perf_counter()
@@ -377,9 +412,14 @@ def predict_all_models(image: np.ndarray):
 
     tensor = preprocess_image(image)
     results = []
+    errors = []
 
     for name in MODEL_REGISTRY:
-        model = load_model(name)
+        try:
+            model = load_model(name)
+        except RuntimeError as exc:
+            errors.append(f"- **{name}**: {exc}")
+            continue
         info = MODEL_REGISTRY[name]
 
         start = time.perf_counter()
@@ -410,6 +450,13 @@ def predict_all_models(image: np.ndarray):
 
     # Sonuçları çıkarım süresine göre sırala
     results.sort(key=lambda r: r["time_ms"])
+
+    if not results and errors:
+        return (
+            "❌ **Hiçbir model yüklenemedi!**\n\n"
+            + "\n".join(errors)
+            + "\n\n**Çözüm:** `git lfs install && git lfs pull`"
+        )
 
     # Markdown tablo oluştur
     lines = [
@@ -442,6 +489,10 @@ def predict_all_models(image: np.ndarray):
             agreeing = [r["name"] for r in results if r["predicted"] == pred]
             lines.append(f"- **{pred}**: {', '.join(agreeing)}")
 
+    if errors:
+        lines.append("\n---\n### ⚠️ Yüklenemeyen Modeller\n")
+        lines.extend(errors)
+
     return "\n".join(lines)
 
 
@@ -452,8 +503,14 @@ model_names = list(MODEL_REGISTRY.keys())
 
 if not model_names:
     raise RuntimeError(
-        "Hiçbir .pth model dosyası bulunamadı! "
-        "Lütfen results/ klasörlerindeki model dosyalarını kontrol edin."
+        "Hiçbir .pth model dosyası bulunamadı!\n"
+        "Olası nedenler:\n"
+        "  1. Model dosyaları Git LFS ile takip ediliyor ancak indirilmemiş.\n"
+        "     Çözüm: git lfs install && git lfs pull\n"
+        "  2. results/ klasörlerinde .pth dosyaları eksik.\n"
+        "     Beklenen konumlar:\n"
+        "       - 03_cnn_transfer_learning/results/*.pth\n"
+        "       - 04_vision_transformers/results/*.pth"
     )
 
 with gr.Blocks(title="🥬 Sebze Sınıflandırma") as demo:
