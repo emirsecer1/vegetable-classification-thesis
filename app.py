@@ -544,4 +544,4 @@ with gr.Blocks(title="🥬 Sebze Sınıflandırma") as demo:
             gr.Markdown("\n".join(info_lines))
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", server_port=7860, theme=gr.themes.Soft())
+    demo.launch(server_name="127.0.0.1", server_port=7860, theme=gr.themes.Soft())
